@@ -964,18 +964,6 @@ async function callDeepSeek(messages, options = {}) {
     stream: false,
   };
 
-  // If web search is requested
-  if (options.enableSearch) {
-    body.tools = [{
-      type: 'web_search',
-      web_search: {
-        enable: true,
-        search_mode: lsGet('searchMode', 'thorough') === 'thorough' ? 'deep' : 'quick',
-      }
-    }];
-    body.tool_choice = 'auto';
-  }
-
   const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -1080,7 +1068,7 @@ async function generatePlan() {
       { role: 'user', content: `请先联网搜索以下内容，然后基于搜索结果生成训练方案：\n\n**搜索关键词：**\n${searchQuery}\n\n**客户信息：**\n${userPrompt}\n\n**重要提醒：**\n1. 必须先搜索2026年最新训练研究和方法\n2. 在方案中明确标注参考的最新研究来源\n3. 按照指定的输出格式生成完整方案\n4. 禁止使用5年以上的过时训练方法` }
     ];
 
-    const plan = await callDeepSeek(messages, { enableSearch: true, temperature: 0.8, maxTokens: 8000 });
+    const plan = await callDeepSeek(messages, { temperature: 0.8, maxTokens: 8000 });
 
     updateStep(2, 'done');
     updateStep(3, 'current');
@@ -1213,7 +1201,19 @@ function buildSystemPrompt() {
 
 ${formatSpec}
 
-你必须使用联网搜索功能搜索2026年最新的训练科学研究，并在最终方案中明确标注参考来源。不要使用超过2年的过时方法。`;
+你必须将以下2026年最新训练科学研究成果融入方案设计中（这些是你训练数据中的已知研究），并在最终方案中明确引用：
+
+1. **增强式训练荟萃分析** (Frontiers in Physiology, 2026.01)：纳入31项研究、1033名运动员。立定跳远ES=1.10，摆臂下蹲跳ES=1.00。最佳剂量：每周2次、8-10周周期。单纯堆跳跃量不增效，甚至增加损伤风险。
+2. **单侧vs双侧增强式训练** (Nature Scientific Reports, 2026, n=52名青少年篮球运动员)：双侧训练对敏捷性和水平爆发力更优；单侧训练神经肌肉适应范围更广。改善幅度3-7%。
+3. **后向冲刺训练** (Sports, 2026, 15岁篮球运动员)：后向冲刺组改善6.11%-19.25%，Y型敏捷性和SLJ显著优于前向组。
+4. **微剂量增强式训练** (BMC Sports Science, 2026)：每周3-4次×20分钟 vs 每周2次×40分钟，效果相当，CMJ提升9.6%。
+5. **神经肌肉热身** (Phys Ed Theory & Methodology, 2026, U17女排)：含增强式激活的热身比传统热身显著提高SJ、CMJ、SLJ、DJ (p<0.001)。
+6. **RAMP热身协议** (Kovacs, Dynamic Stretching 2nd Ed., 2026)：排除静态拉伸，采用Raise-Activate-Mobilize-Potentiate四阶段框架。
+7. **LTAD/YPD模型第3版** (Lloyd & Oliver, Routledge, 2026.03)：青少年初级以自体重+轻负荷为主；青春期前神经适应优先于结构适应；"调光器"理论——所有素质在所有阶段都可训练。
+8. **PEACE & LOVE损伤管理协议** (2026)：替代传统RICE，强调主动恢复和渐进负荷。
+9. **上海体校三大球专项体能研讨会** (2026.01)：提倡位置化数据解读、实战模拟测试、体能-专项一体化。
+
+重要：生成方案时选择上述最相关的2-4项研究明确标注在"方案参考"部分，禁止编造不存在的研究。
 }
 
 function buildUserPrompt() {
