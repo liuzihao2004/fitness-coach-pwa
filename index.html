@@ -3,1723 +3,992 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0a0e1a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="体能教练">
-<meta name="description" content="专业体能与健身教练全能方案生成器 - DeepSeek V3 / R1 驱动">
+<meta name="description" content="专业体能与健身教练全能方案生成器 · AI驱动">
 <link rel="manifest" id="manifestLink" href="">
-<title>🏋️ 体能教练 · 全能方案生成器</title>
+<title>🏋️ 体能教练 Pro</title>
 <style>
-/* ==================== CSS Variables & Reset ==================== */
+/* ============================ CSS Variables & Reset ============================ */
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1a2332;
-  --bg-input: #1e293b;
-  --border: #334155;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --accent: #f97316;
-  --accent-light: #fb923c;
-  --accent-glow: rgba(249,115,22,0.25);
-  --success: #22c55e;
-  --danger: #ef4444;
-  --info: #3b82f6;
-  --warning: #eab308;
-  --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
-  --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --bg-primary:#0a0e1a; --bg-secondary:#111827; --bg-card:#151d2e;
+  --bg-input:#111827; --border:#1e2d45; --border-light:#253552;
+  --text-primary:#f1f5f9; --text-secondary:#94a3b8; --text-muted:#64748b;
+  --accent:#f97316; --accent-light:#fb923c; --accent-glow:rgba(249,115,22,0.25);
+  --accent2:#8b5cf6; --accent2-glow:rgba(139,92,246,0.2);
+  --success:#22c55e; --danger:#ef4444; --info:#3b82f6; --warning:#eab308;
+  --radius-sm:8px; --radius:12px; --radius-lg:16px; --radius-xl:20px;
+  --shadow-sm:0 2px 12px rgba(0,0,0,0.2); --shadow:0 4px 24px rgba(0,0,0,0.35);
+  --shadow-lg:0 8px 40px rgba(0,0,0,0.5);
+  --font-mono:'SF Mono','Cascadia Code','Consolas',monospace;
+  --safe-bottom:env(safe-area-inset-bottom,16px);
+  --header-h:56px; --nav-h:64px;
 }
-
-* { margin:0; padding:0; box-sizing:border-box; }
-html { font-size:16px; -webkit-tap-highlight-color:transparent; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  min-height: 100dvh;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  padding-bottom: calc(72px + var(--safe-bottom));
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;-webkit-tap-highlight-color:transparent;scroll-behavior:smooth;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg-primary);color:var(--text-primary);
+  min-height:100dvh;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 20px);
+  background-image:radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(249,115,22,0.04) 0%, transparent 50%);
 }
-body.modal-open { overflow:hidden; }
+body.modal-open{overflow:hidden;}
 
-/* ==================== Typography ==================== */
-h1 { font-size:1.5rem; font-weight:800; letter-spacing:-0.02em; }
-h2 { font-size:1.25rem; font-weight:700; }
-h3 { font-size:1.1rem; font-weight:700; }
-h4 { font-size:1rem; font-weight:600; }
+/* ============================ Typography ============================ */
+h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;}
+h2{font-size:1.2rem;font-weight:700;}
+h3{font-size:1.05rem;font-weight:700;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
-/* ==================== Scrollbar ==================== */
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
-
-/* ==================== App Shell ==================== */
-.app-header {
-  position: sticky; top:0; z-index:100;
-  background: rgba(15,23,42,0.85); backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px;
-  display:flex; align-items:center; justify-content:space-between;
-  gap:12px;
+/* ============================ App Shell ============================ */
+.app-header{
+  position:sticky;top:0;z-index:100;height:var(--header-h);
+  background:rgba(10,14,26,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;
 }
-.app-header .logo { display:flex; align-items:center; gap:8px; }
-.app-header .logo .icon { font-size:1.6rem; }
-.app-header .logo .title { font-weight:800; font-size:1.1rem; }
-.app-header .actions { display:flex; gap:8px; }
-.icon-btn {
-  width:40px; height:40px; border-radius:50%;
-  border:1px solid var(--border); background:var(--bg-secondary);
-  color:var(--text-primary); font-size:1.2rem;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all 0.2s;
+.app-header .logo{display:flex;align-items:center;gap:8px;}
+.app-header .logo .icon{font-size:1.5rem;}
+.app-header .logo .title{font-weight:800;font-size:1.05rem;background:linear-gradient(135deg,var(--accent-light),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.app-header .actions{display:flex;gap:6px;}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--border);
+  background:var(--bg-secondary);color:var(--text-primary);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:all 0.2s;-webkit-tap-highlight-color:transparent;
+}
+.icon-btn:active{transform:scale(0.9);background:var(--border);}
+.main-content{max-width:500px;margin:0 auto;padding:12px 14px;min-height:calc(100dvh - var(--header-h) - var(--nav-h));}
+
+/* ============================ Step Indicator ============================ */
+.step-bar{display:flex;align-items:center;gap:0;margin-bottom:18px;padding:4px 0;}
+.step-bar .dot{width:32px;height:4px;border-radius:2px;background:var(--border);transition:all 0.4s;flex:1;}
+.step-bar .dot.done{background:var(--success);}
+.step-bar .dot.active{background:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
+.step-label{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-muted);margin-bottom:4px;padding:0 2px;}
+.step-label span.active{color:var(--accent-light);font-weight:700;}
+
+/* ============================ Cards ============================ */
+.card{
+  background:var(--bg-card);border-radius:var(--radius-lg);
+  border:1px solid var(--border);padding:20px;margin-bottom:14px;
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity 0.3s;
+}
+.card.highlight::before{opacity:1;}
+.card-header{margin-bottom:14px;}
+.card-header .step-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;background:rgba(139,92,246,0.15);color:var(--accent2);margin-bottom:8px;}
+.card-header .title{font-size:1.15rem;font-weight:700;margin-bottom:2px;}
+.card-header .subtitle{color:var(--text-secondary);font-size:0.8rem;}
+
+/* ============================ Client Type Cards ============================ */
+.client-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.client-card{
+  background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius-lg);
+  padding:18px 14px;cursor:pointer;transition:all 0.2s;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;
   -webkit-tap-highlight-color:transparent;
 }
-.icon-btn:active { transform:scale(0.92); background:var(--border); }
+.client-card:active{transform:scale(0.96);}
+.client-card.selected{border-color:var(--accent);background:rgba(249,115,22,0.06);box-shadow:0 0 24px var(--accent-glow);}
+.client-card .cc-emoji{font-size:2.2rem;}
+.client-card .cc-title{font-weight:700;font-size:0.9rem;}
+.client-card .cc-desc{color:var(--text-muted);font-size:0.7rem;line-height:1.4;}
 
-.main-content {
-  max-width: 480px; margin:0 auto;
-  padding: 16px; min-height: calc(100vh - 130px);
+/* ============================ Forms ============================ */
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:5px;}
+.form-label .req{color:var(--danger);margin-left:2px;}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:13px 14px;border-radius:var(--radius);
+  border:1.5px solid var(--border);background:var(--bg-input);
+  color:var(--text-primary);font-size:0.95rem;font-family:inherit;
+  transition:all 0.2s;-webkit-appearance:none;
 }
-
-/* ==================== Step Indicator ==================== */
-.step-indicator {
-  display:flex; align-items:center; justify-content:center;
-  gap:6px; margin-bottom:20px; padding:4px 0;
-}
-.step-dot {
-  width:10px; height:10px; border-radius:50%;
-  background:var(--border); transition:all 0.3s;
-}
-.step-dot.active { background:var(--accent); width:28px; border-radius:5px; box-shadow:0 0 10px var(--accent-glow); }
-.step-dot.done { background:var(--success); }
-.step-line { width:24px; height:2px; background:var(--border); border-radius:1px; }
-.step-line.done { background:var(--success); }
-
-/* ==================== Cards ==================== */
-.card {
-  background:var(--bg-card); border-radius:var(--radius-lg);
-  border:1px solid var(--border); padding:20px;
-  margin-bottom:16px; transition:all 0.3s;
-}
-.card-header { margin-bottom:16px; }
-.card-header .label { color:var(--accent); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
-.card-header .title { font-size:1.2rem; font-weight:700; margin-top:4px; }
-.card-header .subtitle { color:var(--text-secondary); font-size:0.85rem; margin-top:2px; }
-
-/* ==================== Client Type Cards ==================== */
-.client-grid { display:grid; grid-template-columns:1fr; gap:12px; }
-.client-card {
-  background:var(--bg-card); border:2px solid var(--border);
-  border-radius:var(--radius-lg); padding:20px;
-  cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:16px;
-  -webkit-tap-highlight-color:transparent;
-}
-.client-card:active { transform:scale(0.97); }
-.client-card.selected {
-  border-color:var(--accent); background:rgba(249,115,22,0.08);
-  box-shadow:0 0 20px var(--accent-glow);
-}
-.client-card .emoji { font-size:2.5rem; flex-shrink:0; }
-.client-card .info h3 { font-size:1rem; margin-bottom:2px; }
-.client-card .info p { color:var(--text-secondary); font-size:0.8rem; }
-
-/* ==================== Forms ==================== */
-.form-group { margin-bottom:16px; }
-.form-label { display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
-.form-label .required { color:var(--danger); margin-left:2px; }
-.form-input, .form-select, .form-textarea {
-  width:100%; padding:14px 16px; border-radius:var(--radius);
-  border:1.5px solid var(--border); background:var(--bg-input);
-  color:var(--text-primary); font-size:1rem; font-family:inherit;
-  transition:all 0.2s; -webkit-appearance:none;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline:none; border-color:var(--accent);
-  box-shadow:0 0 0 3px var(--accent-glow);
-}
-.form-textarea { min-height:80px; resize:vertical; }
-.form-select {
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+.form-textarea{min-height:70px;resize:vertical;}
+.form-select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 16px center;
-  padding-right:40px;
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
 }
-.form-hint { font-size:0.75rem; color:var(--text-muted); margin-top:4px; }
+.form-hint{font-size:0.7rem;color:var(--text-muted);margin-top:4px;}
+.form-row{display:flex;gap:8px;}.form-row>*{flex:1;}
 
-/* Tags / Chips */
-.chip-grid { display:flex; flex-wrap:wrap; gap:8px; }
-.chip {
-  padding:10px 16px; border-radius:20px; border:1.5px solid var(--border);
-  background:var(--bg-input); color:var(--text-secondary);
-  font-size:0.85rem; font-weight:500; cursor:pointer;
-  transition:all 0.2s; white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
+/* ============================ Chips ============================ */
+.chip-grid{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{
+  padding:9px 14px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--bg-input);color:var(--text-secondary);
+  font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.2s;
+  -webkit-tap-highlight-color:transparent;white-space:nowrap;
 }
-.chip:active { transform:scale(0.95); }
-.chip.selected {
-  border-color:var(--accent); background:rgba(249,115,22,0.15);
-  color:var(--accent-light); font-weight:600;
-}
+.chip:active{transform:scale(0.95);}
+.chip.selected{border-color:var(--accent);background:rgba(249,115,22,0.12);color:var(--accent-light);font-weight:600;}
 
-/* ==================== Buttons ==================== */
-.btn {
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  padding:14px 28px; border-radius:var(--radius); border:none;
-  font-size:1rem; font-weight:700; font-family:inherit;
-  cursor:pointer; transition:all 0.2s; white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
-  min-height:48px; min-width:48px;
+/* ============================ Buttons ============================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:13px 24px;border-radius:var(--radius);border:none;
+  font-size:0.95rem;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:all 0.2s;white-space:nowrap;-webkit-tap-highlight-color:transparent;
+  min-height:48px;position:relative;overflow:hidden;
 }
-.btn:active { transform:scale(0.96); }
-.btn-primary { background:var(--accent); color:#fff; box-shadow:0 4px 16px var(--accent-glow); }
-.btn-primary:hover { background:var(--accent-light); }
-.btn-secondary { background:var(--bg-secondary); color:var(--text-primary); border:1.5px solid var(--border); }
-.btn-block { width:100%; }
-.btn-lg { padding:16px 32px; font-size:1.1rem; border-radius:var(--radius-lg); }
-.btn-sm { padding:8px 16px; font-size:0.85rem; min-height:36px; }
-.btn-icon { width:48px; height:48px; padding:0; border-radius:50%; }
-.btn-row { display:flex; gap:12px; }
-.btn-row .btn { flex:1; }
+.btn:active{transform:scale(0.96);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#ea580c);color:#fff;box-shadow:0 4px 16px var(--accent-glow);}
+.btn-primary:hover{box-shadow:0 6px 24px var(--accent-glow);}
+.btn-secondary{background:var(--bg-secondary);color:var(--text-primary);border:1.5px solid var(--border);}
+.btn-accent2{background:linear-gradient(135deg,var(--accent2),#7c3aed);color:#fff;box-shadow:0 4px 16px var(--accent2-glow);}
+.btn-block{width:100%;}
+.btn-lg{padding:16px 28px;font-size:1.05rem;border-radius:var(--radius-lg);}
+.btn-sm{padding:7px 14px;font-size:0.8rem;min-height:34px;}
+.btn-xs{padding:4px 10px;font-size:0.7rem;min-height:26px;border-radius:var(--radius-sm);}
+.btn-row{display:flex;gap:10px;}.btn-row .btn{flex:1;}
 
-/* ==================== Result / Plan Display ==================== */
-.plan-container {
-  background:var(--bg-card); border-radius:var(--radius-lg);
-  border:1px solid var(--border); overflow:hidden;
+/* ============================ FAB ============================ */
+.fab{
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) - 16px);left:50%;transform:translateX(-50%);
+  width:52px;height:52px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,var(--accent),#ea580c);
+  color:#fff;font-size:1.4rem;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:110;box-shadow:0 4px 20px var(--accent-glow);
+  transition:all 0.3s;-webkit-tap-highlight-color:transparent;
 }
-.plan-header {
-  background:linear-gradient(135deg, rgba(249,115,22,0.15), rgba(59,130,246,0.1));
-  padding:20px; border-bottom:1px solid var(--border);
-}
-.plan-header .plan-title { font-size:1.2rem; font-weight:800; }
-.plan-header .plan-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-.plan-meta .tag {
-  padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:600;
-  background:rgba(249,115,22,0.15); color:var(--accent-light);
-}
-.plan-body { padding:20px; }
-.plan-body h2 {
-  color:var(--accent-light); font-size:1.05rem; margin:20px 0 10px;
-  padding-bottom:8px; border-bottom:1px solid var(--border);
-}
-.plan-body h2:first-child { margin-top:0; }
-.plan-body h3 { font-size:0.95rem; margin:16px 0 8px; color:var(--text-primary); }
-.plan-body h4 { font-size:0.85rem; margin:12px 0 6px; color:var(--text-secondary); }
-.plan-body table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.78rem; }
-.plan-body table th { background:var(--bg-secondary); padding:8px 10px; text-align:left; font-weight:700; color:var(--accent-light); font-size:0.72rem; text-transform:uppercase; border:1px solid var(--border); }
-.plan-body table td { padding:8px 10px; border:1px solid var(--border); vertical-align:top; }
-.plan-body table tr:nth-child(even) td { background:rgba(30,41,59,0.5); }
-.plan-body blockquote {
-  border-left:3px solid var(--accent); margin:12px 0; padding:10px 14px;
-  background:rgba(249,115,22,0.06); border-radius:0 var(--radius-sm) var(--radius-sm) 0;
-  color:var(--text-secondary); font-style:italic;
-}
-.plan-body ul, .plan-body ol { margin:8px 0; padding-left:20px; }
-.plan-body li { margin:4px 0; font-size:0.9rem; }
-.plan-body strong { color:var(--accent-light); }
-.plan-body hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
-.plan-body p { margin:8px 0; font-size:0.9rem; }
-.plan-body code {
-  background:var(--bg-secondary); padding:2px 6px; border-radius:4px;
-  font-family:var(--font-mono); font-size:0.8rem;
-}
+.fab:active{transform:translateX(-50%) scale(0.9);box-shadow:0 8px 32px var(--accent-glow);}
 
-/* ==================== Loading ==================== */
-.loading-overlay {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:40px 20px; text-align:center;
-}
-.spinner {
-  width:48px; height:48px; border:4px solid var(--border);
-  border-top-color:var(--accent); border-radius:50%;
-  animation:spin 0.8s linear infinite;
-  margin-bottom:16px;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-.loading-text { color:var(--text-secondary); font-size:0.9rem; }
-.loading-steps { display:flex; flex-direction:column; gap:8px; margin-top:16px; width:100%; max-width:300px; }
-.loading-step { display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--text-muted); }
-.loading-step .dot { width:8px; height:8px; border-radius:50%; background:var(--border); flex-shrink:0; }
-.loading-step .dot.done { background:var(--success); }
-.loading-step .dot.current { background:var(--accent); animation:pulse 1s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+/* ============================ Plan Display ============================ */
+.plan-container{background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;}
+.plan-header{background:linear-gradient(135deg,rgba(249,115,22,0.1),rgba(139,92,246,0.08));padding:18px;border-bottom:1px solid var(--border);}
+.plan-header .plan-title{font-size:1.15rem;font-weight:800;}
+.plan-header .plan-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.tag{padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent-light);}
+.tag.purple{background:rgba(139,92,246,0.12);color:var(--accent2);}
+.tag.green{background:rgba(34,197,94,0.12);color:var(--success);}
+.plan-body{padding:18px;overflow-x:auto;}
+.plan-body h2{color:var(--accent-light);font-size:1rem;margin:20px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.plan-body h2:first-child{margin-top:0;}
+.plan-body h3{font-size:0.9rem;margin:14px 0 6px;color:var(--text-primary);}
+.plan-body h4{font-size:0.82rem;margin:10px 0 4px;color:var(--text-secondary);}
+.plan-body table{width:100%;border-collapse:collapse;margin:8px 0;font-size:0.72rem;min-width:400px;}
+.plan-body table th{background:var(--bg-secondary);padding:7px 8px;text-align:left;font-weight:700;color:var(--accent-light);font-size:0.68rem;text-transform:uppercase;border:1px solid var(--border);white-space:nowrap;}
+.plan-body table td{padding:7px 8px;border:1px solid var(--border);vertical-align:top;}
+.plan-body table tr:nth-child(even) td{background:rgba(17,24,39,0.5);}
+.plan-body blockquote{border-left:3px solid var(--accent);margin:10px 0;padding:10px 14px;background:rgba(249,115,22,0.05);border-radius:0 var(--radius-sm) var(--radius-sm) 0;color:var(--text-secondary);font-style:italic;}
+.plan-body ul,.plan-body ol{margin:6px 0;padding-left:18px;}
+.plan-body li{margin:3px 0;font-size:0.85rem;}
+.plan-body strong{color:var(--accent-light);}
+.plan-body hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
+.plan-body p{margin:6px 0;font-size:0.85rem;}
+.plan-body code{background:var(--bg-secondary);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:0.75rem;}
 
-/* ==================== Toast ==================== */
-.toast-container { position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; width:calc(100% - 32px); max-width:400px; pointer-events:none; }
-.toast {
-  padding:14px 20px; border-radius:var(--radius); font-size:0.9rem; font-weight:600;
-  color:#fff; animation:slideDown 0.3s ease;
-  pointer-events:auto; text-align:center;
+/* ============================ Exercise Library ============================ */
+.exercise-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.exercise-card{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;
 }
-.toast.success { background:var(--success); }
-.toast.error { background:var(--danger); }
-.toast.info { background:var(--info); }
-@keyframes slideDown { from{opacity:0;transform:translateY(-20px);} to{opacity:1;transform:translateY(0);} }
+.exercise-card:active{transform:scale(0.97);background:var(--bg-input);}
+.exercise-card .ex-icon{font-size:1.5rem;margin-bottom:4px;}
+.exercise-card .ex-name{font-weight:700;font-size:0.8rem;margin-bottom:2px;}
+.exercise-card .ex-muscles{font-size:0.65rem;color:var(--text-muted);}
+.exercise-card .ex-diff{display:inline-block;margin-top:4px;padding:2px 6px;border-radius:8px;font-size:0.6rem;font-weight:600;}
+.ex-diff.beginner{background:rgba(34,197,94,0.15);color:var(--success);}
+.ex-diff.intermediate{background:rgba(249,115,22,0.15);color:var(--accent-light);}
+.ex-diff.advanced{background:rgba(239,68,68,0.15);color:var(--danger);}
+.filter-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;-webkit-overflow-scrolling:touch;}
+.filter-bar::-webkit-scrollbar{height:0;}
+.filter-chip{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg-input);color:var(--text-secondary);font-size:0.75rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.filter-chip.active{border-color:var(--accent2);background:rgba(139,92,246,0.12);color:var(--accent2);}
+.search-input{width:100%;padding:12px 14px 12px 38px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);font-size:0.9rem;margin-bottom:12px;}
+.search-wrap{position:relative;}.search-wrap .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--text-muted);}
 
-/* ==================== Bottom Nav ==================== */
-.bottom-nav {
-  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:480px; z-index:100;
-  background:rgba(15,23,42,0.9); backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border-top:1px solid var(--border);
-  display:flex; padding:8px 16px;
-  padding-bottom:calc(8px + var(--safe-bottom));
-}
-.nav-item {
-  flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
-  padding:8px; border:none; background:none; color:var(--text-muted);
-  font-size:0.7rem; font-weight:600; cursor:pointer; transition:color 0.2s;
-  -webkit-tap-highlight-color:transparent;
-}
-.nav-item .nav-icon { font-size:1.3rem; }
-.nav-item.active { color:var(--accent-light); }
+/* ============================ Loading / Progress ============================ */
+.loading-overlay{display:flex;flex-direction:column;align-items:center;padding:32px 20px;text-align:center;}
+.spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{color:var(--text-secondary);font-size:0.85rem;margin-bottom:4px;}
+.loading-sub{font-size:0.7rem;color:var(--text-muted);}
+.progress-steps{display:flex;flex-direction:column;gap:8px;margin-top:14px;width:100%;max-width:280px;}
+.progress-step{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--text-muted);padding:6px 10px;border-radius:var(--radius-sm);transition:all 0.3s;}
+.progress-step .ps-icon{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;transition:all 0.3s;}
+.progress-step.done{color:var(--success);}.progress-step.done .ps-icon{border-color:var(--success);background:rgba(34,197,94,0.15);}
+.progress-step.current{color:var(--accent-light);}.progress-step.current .ps-icon{border-color:var(--accent);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow);}50%{box-shadow:0 0 0 8px transparent;}}
 
-/* ==================== Modal ==================== */
-.modal-backdrop {
-  position:fixed; inset:0; z-index:200;
-  background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
-  display:flex; align-items:flex-end; justify-content:center;
-  animation:fadeIn 0.2s;
-}
-@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-.modal {
-  background:var(--bg-secondary); width:100%; max-width:480px;
-  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
-  padding:24px 20px; padding-bottom:calc(24px + var(--safe-bottom));
-  max-height:85vh; overflow-y:auto;
-  animation:slideUp 0.3s ease;
-}
-@keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
-.modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
-.modal-header h3 { font-size:1.1rem; }
-.modal-close { width:32px; height:32px; border-radius:50%; border:none; background:var(--border); color:var(--text-primary); font-size:1.2rem; cursor:pointer; }
+/* ============================ Toast ============================ */
+.toast-container{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:6px;width:calc(100% - 28px);max-width:420px;pointer-events:none;}
+.toast{padding:12px 18px;border-radius:var(--radius);font-size:0.85rem;font-weight:600;color:#fff;animation:slideDown 0.3s ease;pointer-events:auto;text-align:center;backdrop-filter:blur(10px);}
+.toast.success{background:rgba(34,197,94,0.9);}
+.toast.error{background:rgba(239,68,68,0.9);}
+.toast.info{background:rgba(59,130,246,0.9);}
+@keyframes slideDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
 
-/* ==================== History List ==================== */
-.history-item {
-  background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);
-  padding:16px; margin-bottom:10px; cursor:pointer; transition:all 0.2s;
+/* ============================ Modal ============================ */
+.modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{background:var(--bg-secondary);width:100%;max-width:500px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:22px 18px calc(22px + var(--safe-bottom));max-height:80vh;overflow-y:auto;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--border);color:var(--text-primary);font-size:1.1rem;cursor:pointer;}
+.modal-body h4{color:var(--accent);font-size:0.75rem;text-transform:uppercase;margin:10px 0 4px;}
+.modal-body p{font-size:0.85rem;color:var(--text-secondary);margin-bottom:4px;}
+
+/* ============================ Bottom Nav ============================ */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;z-index:100;
+  background:rgba(10,14,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);display:flex;padding:6px 8px;padding-bottom:calc(6px + var(--safe-bottom));
 }
-.history-item:active { background:var(--bg-input); }
-.history-item .hi-header { display:flex; justify-content:space-between; align-items:start; margin-bottom:6px; }
-.history-item .hi-type { font-size:0.75rem; font-weight:700; color:var(--accent-light); }
-.history-item .hi-date { font-size:0.7rem; color:var(--text-muted); }
-.history-item .hi-info { font-size:0.85rem; color:var(--text-secondary); }
-.history-item .hi-goal { display:inline-block; padding:2px 8px; border-radius:10px; background:rgba(59,130,246,0.15); color:var(--info); font-size:0.7rem; margin-top:6px; }
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:none;background:none;color:var(--text-muted);font-size:0.62rem;font-weight:600;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
+.nav-item .nav-icon{font-size:1.2rem;transition:transform 0.2s;}
+.nav-item.active{color:var(--accent-light);}.nav-item.active .nav-icon{transform:translateY(-2px);}
 
-/* ==================== Utility ==================== */
-.text-center { text-align:center; }
-.mt-2 { margin-top:8px; }
-.mt-4 { margin-top:16px; }
-.mt-6 { margin-top:24px; }
-.mb-2 { margin-bottom:8px; }
-.mb-4 { margin-bottom:16px; }
-.hidden { display:none !important; }
-.fade-in { animation:fadeIn 0.4s ease; }
-.slide-right { animation:slideRight 0.3s ease; }
-@keyframes slideRight { from{opacity:0;transform:translateX(30px);} to{opacity:1;transform:translateX(0);} }
+/* ============================ History ============================ */
+.history-item{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;}
+.history-item:active{background:var(--bg-input);transform:scale(0.98);}
+.history-item .hi-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:4px;}
+.history-item .hi-type{font-size:0.7rem;font-weight:700;color:var(--accent-light);}
+.history-item .hi-date{font-size:0.65rem;color:var(--text-muted);}
+.history-item .hi-summary{font-size:0.8rem;color:var(--text-secondary);}
+.history-item .hi-tags{margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;}
 
-/* ==================== Mobile Optimizations ==================== */
-@media (max-width: 380px) {
-  .client-card { padding:16px; gap:12px; }
-  .client-card .emoji { font-size:2rem; }
-  .card { padding:16px; }
-  .btn { padding:12px 20px; font-size:0.95rem; }
+/* ============================ Utilities ============================ */
+.text-center{text-align:center;}
+.mt-2{margin-top:8px;}.mt-4{margin-top:16px;}.mt-6{margin-top:24px;}
+.mb-2{margin-bottom:8px;}.mb-4{margin-bottom:16px;}
+.hidden{display:none!important;}
+.fade-in{animation:fadeIn 0.35s ease;}
+.slide-in-right{animation:slideInRight 0.3s ease;}
+.slide-in-left{animation:slideInLeft 0.3s ease;}
+@keyframes slideInRight{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:translateX(0);}}
+.fade-up{animation:fadeUp 0.4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============================ Responsive ============================ */
+@media (max-width:370px){
+  .client-grid{grid-template-columns:1fr;gap:8px;}
+  .client-card{flex-direction:row;text-align:left;padding:14px 16px;gap:12px;}
+  .client-card .cc-emoji{font-size:1.8rem;}
+  .exercise-grid{grid-template-columns:1fr;}
+  .card{padding:14px;}
+  .btn{font-size:0.9rem;padding:12px 20px;}
 }
-
-@media (min-width: 768px) {
-  .main-content { padding:24px; }
-  .client-grid { grid-template-columns:1fr 1fr 1fr; }
+@media (min-width:768px){
+  .main-content{padding:20px;}
+  .exercise-grid{grid-template-columns:1fr 1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- ==================== App Header ==================== -->
 <header class="app-header">
-  <div class="logo">
-    <span class="icon">🏋️</span>
-    <span class="title">体能教练</span>
-  </div>
+  <div class="logo"><span class="icon">🏋️</span><span class="title">体能教练 Pro</span></div>
   <div class="actions">
-    <button class="icon-btn hidden" id="btnInstall" title="安装到桌面" aria-label="安装">📲</button>
-    <button class="icon-btn" id="btnSettings" title="设置" aria-label="设置">⚙️</button>
-    <button class="icon-btn" id="btnHistory" title="历史记录" aria-label="历史记录">📋</button>
+    <button class="icon-btn hidden" id="btnInstall" title="安装到桌面">📲</button>
+    <button class="icon-btn" id="btnSettings" title="设置">⚙️</button>
   </div>
 </header>
 
-<!-- ==================== Main Content ==================== -->
-<main class="main-content" id="mainContent">
-  <!-- Screens are dynamically rendered here -->
-</main>
+<main class="main-content" id="mainContent"></main>
 
-<!-- ==================== Bottom Nav ==================== -->
+<button class="fab hidden" id="fabNew" title="新建方案">✨</button>
+
 <nav class="bottom-nav" id="bottomNav">
-  <button class="nav-item active" data-screen="wizard">
-    <span class="nav-icon">✨</span> 新建方案
-  </button>
-  <button class="nav-item" data-screen="history">
-    <span class="nav-icon">📋</span> 历史记录
-  </button>
-  <button class="nav-item" data-screen="settings">
-    <span class="nav-icon">⚙️</span> 设置
-  </button>
+  <button class="nav-item active" data-screen="history"><span class="nav-icon">📋</span>历史</button>
+  <button class="nav-item" data-screen="wizard"><span class="nav-icon">✨</span>新建</button>
+  <button class="nav-item" data-screen="exercises"><span class="nav-icon">🏃</span>动作库</button>
+  <button class="nav-item" data-screen="settings"><span class="nav-icon">⚙️</span>设置</button>
 </nav>
 
-<!-- ==================== Toast Container ==================== -->
 <div class="toast-container" id="toastContainer"></div>
-
-<!-- ==================== Modal Container ==================== -->
 <div id="modalContainer" class="hidden"></div>
 
 <script>
-/* ======================================================================
-   体能教练全能方案生成器 PWA
-   DeepSeek v4 Pro 驱动 · 移动端优先
-   ====================================================================== */
-
-// ==================== App State ====================
-const APP_STATE = {
-  screen: 'wizard',       // wizard | history | settings | result
-  currentStep: 1,         // 1-5
-  clientType: '',         // personal | athlete | team
-  formData: {
-    // Step 2: Basic Info
-    age: '', gender: '', height: '', weight: '',
-    trainingYears: '', trainingLevel: '',
-    // Team-specific
-    teamSize: '', teamAvgAge: '', teamAvgLevel: '',
-    // Step 3: Health & Conditions
-    injury: '', trainingDuration: '', equipment: '', venue: '',
-    // Step 4: Goals & Preferences
-    goals: [], trainingModes: [], sportType: '', extraNotes: '',
-  },
-  generatedPlan: null,    // Current plan markdown
-  currentPlanId: null,
-};
+/*============================================================================
+   体能教练全能方案生成器 Pro v2
+   DeepSeek V3 / R1 驱动 · 移动端优先 · 周期训练 · 动作库
+   ============================================================================*/
 
 // ==================== Constants ====================
-const TRAINING_MODES = [
-  { id: 'crossfit_wod', label: 'CrossFit WOD', icon: '🏋️' },
-  { id: 'emom', label: 'EMOM', icon: '⏱️' },
-  { id: 'amrap', label: 'AMRAP', icon: '🔄' },
-  { id: 'tabata', label: 'Tabata', icon: '🔥' },
-  { id: 'hiit', label: 'HIIT', icon: '💥' },
-  { id: 'functional', label: '功能性训练', icon: '🎯' },
-  { id: 'strength_5x5', label: '5×5力量', icon: '💪' },
-  { id: 'bodybuilding', label: '健美式训练', icon: '🏛️' },
-  { id: 'powerlifting', label: '力量举', icon: '🏆' },
-  { id: 'olympic_lift', label: '举重技术', icon: '🥇' },
-  { id: 'endurance', label: '耐力训练', icon: '🏃' },
-  { id: 'plyometric', label: '增强式训练', icon: '🚀' },
-  { id: 'trx', label: 'TRX悬吊', icon: '⛓️' },
-  { id: 'kettlebell', label: '壶铃训练', icon: '🔔' },
-  { id: 'battle_rope', label: '战绳', icon: '〰️' },
-  { id: 'spartan', label: '斯巴达训练', icon: '⚔️' },
-  { id: 'herox', label: 'HeroX', icon: '🦸' },
-  { id: 'fartlek', label: 'Fartlek', icon: '🌊' },
-  { id: 'wave_period', label: '波浪周期', icon: '🌊' },
-  { id: 'linear_period', label: '线性周期', icon: '📈' },
+var TRAINING_MODES = [
+  {id:'crossfit_wod',label:'CrossFit WOD',icon:'🏋️'},{id:'emom',label:'EMOM',icon:'⏱️'},
+  {id:'amrap',label:'AMRAP',icon:'🔄'},{id:'tabata',label:'Tabata',icon:'🔥'},
+  {id:'hiit',label:'HIIT',icon:'💥'},{id:'functional',label:'功能性训练',icon:'🎯'},
+  {id:'strength_5x5',label:'5×5力量',icon:'💪'},{id:'bodybuilding',label:'健美式训练',icon:'🏛️'},
+  {id:'powerlifting',label:'力量举',icon:'🏆'},{id:'olympic_lift',label:'举重技术',icon:'🥇'},
+  {id:'endurance',label:'耐力训练',icon:'🏃'},{id:'plyometric',label:'增强式训练',icon:'🚀'},
+  {id:'trx',label:'TRX悬吊',icon:'⛓️'},{id:'kettlebell',label:'壶铃训练',icon:'🔔'},
+  {id:'battle_rope',label:'战绳',icon:'〰️'},{id:'spartan',label:'斯巴达训练',icon:'⚔️'},
+  {id:'herox',label:'HeroX',icon:'🦸'},{id:'fartlek',label:'Fartlek',icon:'🌊'},
+  {id:'wave_period',label:'波浪周期',icon:'🌊'},{id:'linear_period',label:'线性周期',icon:'📈'}
 ];
 
-const GOAL_OPTIONS = [
-  { id: 'fat_loss', label: '减脂塑形', icon: '🔥' },
-  { id: 'muscle_gain', label: '增肌力量', icon: '💪' },
-  { id: 'general_fitness', label: '综合体能', icon: '🎯' },
-  { id: 'performance', label: '运动表现', icon: '⚡' },
-  { id: 'endurance_goal', label: '耐力提升', icon: '🏃' },
-  { id: 'flexibility', label: '柔韧与康复', icon: '🧘' },
-  { id: 'explosive', label: '爆发力', icon: '🚀' },
-  { id: 'agility', label: '敏捷协调', icon: '🔄' },
+var GOAL_OPTIONS = [
+  {id:'fat_loss',label:'减脂塑形',icon:'🔥'},{id:'muscle_gain',label:'增肌力量',icon:'💪'},
+  {id:'general_fitness',label:'综合体能',icon:'🎯'},{id:'performance',label:'运动表现',icon:'⚡'},
+  {id:'endurance_goal',label:'耐力提升',icon:'🏃'},{id:'flexibility',label:'柔韧康复',icon:'🧘'},
+  {id:'explosive',label:'爆发力',icon:'🚀'},{id:'agility',label:'敏捷协调',icon:'🔄'}
 ];
 
-const SPORT_TYPES = [
-  '篮球', '足球', '排球', '网球', '羽毛球', '乒乓球',
-  '游泳', '田径-短跑', '田径-长跑', '田径-跳跃', '田径-投掷',
-  '拳击', 'MMA/格斗', '跆拳道', '柔道', '摔跤',
-  '自行车', '铁人三项', 'CrossFit竞技', '体操', '攀岩',
-  '滑雪', '冰球', '棒球', '橄榄球', '其他',
+var SPORT_TYPES = ['篮球','足球','排球','网球','羽毛球','乒乓球','游泳','田径-短跑','田径-长跑','田径-跳跃','田径-投掷','拳击','MMA/格斗','跆拳道','柔道','摔跤','自行车','铁人三项','CrossFit竞技','体操','攀岩','滑雪','冰球','棒球','橄榄球','其他'];
+
+var INJURY_OPTIONS = [
+  {value:'none',label:'无伤病'},{value:'recovered',label:'旧伤已恢复'},{value:'knee',label:'膝关节问题'},
+  {value:'shoulder',label:'肩关节问题'},{value:'back',label:'腰背问题'},{value:'ankle',label:'踝关节问题'},
+  {value:'wrist',label:'腕关节问题'},{value:'other',label:'其他轻微伤病'}
 ];
 
-const INJURY_OPTIONS = [
-  { value: 'none', label: '无伤病' },
-  { value: 'recovered', label: '旧伤已恢复' },
-  { value: 'knee', label: '膝关节问题' },
-  { value: 'shoulder', label: '肩关节问题' },
-  { value: 'back', label: '腰背问题' },
-  { value: 'ankle', label: '踝关节问题' },
-  { value: 'wrist', label: '腕关节问题' },
-  { value: 'other', label: '其他轻微伤病' },
+var TRAINING_LEVELS = [
+  {value:'beginner',label:'初级（< 1年）'},{value:'intermediate',label:'中级（1-3年）'},
+  {value:'advanced',label:'高级（3年+）'},{value:'elite',label:'精英级'}
 ];
 
-const TRAINING_LEVELS = [
-  { value: 'beginner', label: '初级（< 1年）' },
-  { value: 'intermediate', label: '中级（1-3年）' },
-  { value: 'advanced', label: '高级（3年+）' },
-  { value: 'elite', label: '精英级' },
+var PERIOD_TYPES = [
+  {value:'micro',label:'微周期（1周）',days:7},{value:'meso',label:'中周期（4周）',days:28},
+  {value:'macro',label:'大周期（8周）',days:56},{value:'macro12',label:'大周期（12周）',days:84}
 ];
 
-// ==================== LocalStorage Helpers ====================
-function lsGet(key, fallback = null) {
-  try { const v = localStorage.getItem(`fc_${key}`); return v ? JSON.parse(v) : fallback; }
-  catch { return fallback; }
-}
-function lsSet(key, value) {
-  try { localStorage.setItem(`fc_${key}`, JSON.stringify(value)); } catch {}
-}
-function lsDel(key) {
-  try { localStorage.removeItem(`fc_${key}`); } catch {}
-}
+var PERIOD_PHASES = [
+  {value:'prep',label:'准备期',desc:'建立基础体能，适应训练负荷'},{value:'strength',label:'力量期',desc:'最大化力量与肌肉发展'},
+  {value:'power',label:'爆发力期',desc:'力量转化为爆发力与速度'},{value:'competition',label:'比赛期',desc:'保持状态，赛前减量'},
+  {value:'transition',label:'过渡期',desc:'主动恢复，调整身心'}
+];
+
+var EXERCISE_CATEGORIES = [
+  {id:'all',label:'全部',icon:'📋'},{id:'warmup',label:'热身激活',icon:'🔥'},
+  {id:'strength',label:'力量训练',icon:'💪'},{id:'explosive',label:'爆发力',icon:'🚀'},
+  {id:'core',label:'核心训练',icon:'🎯'},{id:'cardio',label:'有氧耐力',icon:'🏃'},
+  {id:'flexibility',label:'柔韧放松',icon:'🧘'}
+];
+
+var EXERCISES = [
+  {id:'w1',cat:'warmup',name:'开合跳',muscles:'全身',desc:'双脚跳开同时双手在头顶击掌，再跳回起始位置。激活全身血液循环。',diff:'beginner',icon:'⭐'},
+  {id:'w2',cat:'warmup',name:'高抬腿',muscles:'髋屈肌/股四头肌',desc:'原地跑步，膝盖尽量抬高至髋部以上，保持核心收紧。',diff:'beginner',icon:'🦵'},
+  {id:'w3',cat:'warmup',name:'臀桥',muscles:'臀大肌/腘绳肌',desc:'仰卧屈膝，臀部发力向上抬起，顶峰收缩1-2秒。激活后链。',diff:'beginner',icon:'🌉'},
+  {id:'w4',cat:'warmup',name:'猫牛式',muscles:'脊柱/核心',desc:'四足位，吸气时弓背收腹，呼气时塌腰抬头，逐节活动脊柱。',diff:'beginner',icon:'🐱'},
+  {id:'w5',cat:'warmup',name:'肩关节环绕',muscles:'肩袖肌群',desc:'双臂侧平举做小幅度绕环，由小到大逐渐增加幅度。',diff:'beginner',icon:'🔃'},
+  {id:'w6',cat:'warmup',name:'最伟大拉伸',muscles:'全身',desc:'弓步→肘触地→旋转胸椎→上举手臂，世界公认最佳动态拉伸。',diff:'intermediate',icon:'🏆'},
+  {id:'w7',cat:'warmup',name:'弓步转体',muscles:'髋屈肌/胸椎',desc:'向前弓步同时向同侧旋转躯干，改善髋关节和胸椎活动度。',diff:'beginner',icon:'🔄'},
+  {id:'w8',cat:'warmup',name:'腿摆',muscles:'腘绳肌/髋',desc:'站立扶墙，单腿前后摆动，逐渐加大幅度，动态拉伸后链。',diff:'beginner',icon:'🦿'},
+  {id:'w9',cat:'warmup',name:'侧弓步',muscles:'内收肌/臀',desc:'向侧方跨步下蹲，拉伸大腿内侧，交替进行。',diff:'beginner',icon:'↔️'},
+  {id:'w10',cat:'warmup',name:'虫爬',muscles:'核心/肩/腘绳肌',desc:'站立前屈手触地，双手向前爬至俯卧撑位再爬回，优秀全身热身。',diff:'intermediate',icon:'🐛'},
+  {id:'s1',cat:'strength',name:'杠铃深蹲',muscles:'股四头肌/臀/核心',desc:'杠铃置于斜方肌上，双脚与肩同宽，保持脊柱中立下蹲至大腿平行地面。',diff:'advanced',icon:'🏋️'},
+  {id:'s2',cat:'strength',name:'传统硬拉',muscles:'后链/臀/腘绳肌',desc:'杠铃贴小腿，髋铰链启动，保持背部平直拉起杠铃至锁定。',diff:'advanced',icon:'🔗'},
+  {id:'s3',cat:'strength',name:'高脚杯深蹲',muscles:'股四头肌/臀/核心',desc:'双手持哑铃于胸前，保持躯干直立下蹲，肘部触碰膝盖内侧。',diff:'beginner',icon:'🍷'},
+  {id:'s4',cat:'strength',name:'保加利亚分腿蹲',muscles:'股四头肌/臀/稳定肌',desc:'后脚置于凳上，前腿屈膝下蹲至后膝接近地面，保持躯干直立。',diff:'intermediate',icon:'🇧🇬'},
+  {id:'s5',cat:'strength',name:'罗马尼亚硬拉',muscles:'腘绳肌/臀/竖脊肌',desc:'微屈膝，髋铰链后推，杠铃沿腿下放至小腿中段，感受后链拉伸。',diff:'intermediate',icon:'📐'},
+  {id:'s6',cat:'strength',name:'前蹲',muscles:'股四头肌/核心/上背',desc:'杠铃置于前三角肌，肘部抬高，保持躯干直立深蹲。强化核心稳定性。',diff:'advanced',icon:'⬆️'},
+  {id:'s7',cat:'strength',name:'臀推',muscles:'臀大肌',desc:'上背靠凳，杠铃置于髋部，臀部发力上推至身体呈直线，顶峰收缩。',diff:'intermediate',icon:'🍑'},
+  {id:'s8',cat:'strength',name:'行走弓步',muscles:'股四头肌/臀/核心',desc:'双手持哑铃，交替向前弓步行走，保持躯干直立和稳定。',diff:'beginner',icon:'🚶'},
+  {id:'s9',cat:'strength',name:'单腿罗马尼亚硬拉',muscles:'腘绳肌/臀/平衡',desc:'单腿站立，对侧手负重，髋铰链前倾，自由腿向后伸展保持平衡。',diff:'intermediate',icon:'🦩'},
+  {id:'s10',cat:'strength',name:'提踵',muscles:'腓肠肌/比目鱼肌',desc:'站姿或坐姿提踵，充分收缩小腿肌群，可负重。',diff:'beginner',icon:'🦶'},
+  {id:'u1',cat:'strength',name:'杠铃卧推',muscles:'胸/三角肌前束/三头',desc:'躺于平板凳，握距略宽于肩，控制下降至胸前再推起。',diff:'advanced',icon:'🛏️'},
+  {id:'u2',cat:'strength',name:'引体向上',muscles:'背阔肌/二头',desc:'正手握杠，肩胛下沉启动，拉至下巴过杠。核心收紧避免摆动。',diff:'intermediate',icon:'🔝'},
+  {id:'u3',cat:'strength',name:'实力推举',muscles:'三角肌/三头/核心',desc:'站姿杠铃推举，保持核心收紧不借力，从锁骨推至头顶锁定。',diff:'intermediate',icon:'⬆️'},
+  {id:'u4',cat:'strength',name:'杠铃划船',muscles:'背阔肌/菱形肌/二头',desc:'俯身45度，杠铃沿腿拉至下腹，肩胛充分收缩。',diff:'intermediate',icon:'🚣'},
+  {id:'u5',cat:'strength',name:'俯卧撑',muscles:'胸/三头/核心',desc:'双手略宽于肩，身体呈直线下降至胸近地面，全程核心收紧。',diff:'beginner',icon:'💪'},
+  {id:'u6',cat:'strength',name:'臂屈伸',muscles:'三头/胸/三角肌',desc:'双杠或凳子支撑，屈肘下降再推起，保持躯干稳定。',diff:'intermediate',icon:'🔻'},
+  {id:'u7',cat:'strength',name:'哑铃侧平举',muscles:'三角肌中束',desc:'微屈肘，双臂侧举至肩高，顶峰停留1秒，控制下放。',diff:'beginner',icon:'🪽'},
+  {id:'u8',cat:'strength',name:'面拉',muscles:'三角肌后束/肩袖/上背',desc:'绳索或弹力带拉向面部，外旋肩关节，改善肩部健康和姿势。',diff:'beginner',icon:'😊'},
+  {id:'u9',cat:'strength',name:'单臂哑铃划船',muscles:'背阔肌/菱形肌',desc:'单膝跪凳，对侧手持哑铃，沿身体拉至髋部，充分收缩背肌。',diff:'beginner',icon:'🚣'},
+  {id:'u10',cat:'strength',name:'双杠臂屈伸',muscles:'胸下束/三头/三角肌',desc:'双杠支撑，身体前倾侧重胸部，直立侧重三头，控制下降深度。',diff:'advanced',icon:'📊'},
+  {id:'e1',cat:'explosive',name:'高翻',muscles:'全身/臀/上背',desc:'杠铃从地面经髋膝踝三关节伸展拉至肩部前架位，奥林匹克举重基础。',diff:'advanced',icon:'⚡'},
+  {id:'e2',cat:'explosive',name:'借力推举',muscles:'三角肌/三头/腿',desc:'微屈膝预蹲后爆发力推举杠铃过头顶，下肢驱动上肢完成。',diff:'intermediate',icon:'🚀'},
+  {id:'e3',cat:'explosive',name:'跳箱',muscles:'股四头肌/臀/核心',desc:'面对跳箱，摆臂下蹲蓄力后爆发跳上箱面，落地轻柔缓冲。',diff:'intermediate',icon:'📦'},
+  {id:'e4',cat:'explosive',name:'药球下砸',muscles:'核心/肩/背',desc:'双手举药球过头顶，全力向下砸向地面，收腹发力，充分伸展。',diff:'beginner',icon:'💥'},
+  {id:'e5',cat:'explosive',name:'壶铃摇摆',muscles:'臀/腘绳肌/核心',desc:'髋铰链驱动壶铃前后摆动，臀部爆发前推，肩臂仅传导力量。',diff:'intermediate',icon:'🔔'},
+  {id:'e6',cat:'explosive',name:'立定跳远',muscles:'下肢/核心',desc:'摆臂蓄力，三关节伸展爆发前跳，落地缓冲。简单有效的爆发力测试。',diff:'beginner',icon:'📏'},
+  {id:'c1',cat:'core',name:'平板支撑',muscles:'核心/肩',desc:'前臂支撑，身体呈直线，收紧臀腿核心，保持均匀呼吸。',diff:'beginner',icon:'📋'},
+  {id:'c2',cat:'core',name:'死虫式',muscles:'深层核心/协调',desc:'仰卧四肢朝天，交替伸展对侧手脚，保持腰部贴地，核心康复首选。',diff:'beginner',icon:'🐛'},
+  {id:'c3',cat:'core',name:'鸟狗式',muscles:'核心/臀/肩稳定',desc:'四足位，同时伸展对侧手臂和腿，保持躯干稳定不旋转。',diff:'beginner',icon:'🐦'},
+  {id:'c4',cat:'core',name:'悬垂举腿',muscles:'腹直肌/髋屈肌',desc:'悬垂于单杠，直腿或屈膝上举至髋部90度以上，控制下放。',diff:'advanced',icon:'🦵'},
+  {id:'c5',cat:'core',name:'俄罗斯转体',muscles:'腹斜肌/核心',desc:'坐姿后倾，双脚离地，持重物左右旋转躯干，保持平衡。',diff:'intermediate',icon:'🇷🇺'},
+  {id:'c6',cat:'core',name:'农夫行走',muscles:'核心/握力/全身稳定',desc:'双手持重物自然行走，保持躯干稳定直立，核心持续等长收缩。',diff:'beginner',icon:'🧑‍🌾'},
+  {id:'cd1',cat:'cardio',name:'波比跳',muscles:'全身',desc:'站立→俯卧撑→跳回→爆发跳起，全身心肺极限挑战。',diff:'intermediate',icon:'🔥'},
+  {id:'cd2',cat:'cardio',name:'战绳',muscles:'上肢/核心/心肺',desc:'双手持绳做波浪/绕圈/砸击动作，持续高强度心肺刺激。',diff:'intermediate',icon:'〰️'},
+  {id:'cd3',cat:'cardio',name:'划船机',muscles:'全身/腿/背',desc:'腿蹬→躯干后仰→手臂拉，连贯发力，低冲击全身有氧。',diff:'beginner',icon:'🚣'},
+  {id:'cd4',cat:'cardio',name:'双摇跳绳',muscles:'小腿/协调/心肺',desc:'一次跳跃摇绳两圈，高水平协调和心肺能力，初学者可从单摇开始。',diff:'advanced',icon:'⭕'},
+  {id:'f1',cat:'flexibility',name:'腘绳肌拉伸',muscles:'腘绳肌',desc:'坐姿一腿伸直，另一腿屈膝，身体前倾够脚尖，保持30秒。',diff:'beginner',icon:'🧘'},
+  {id:'f2',cat:'flexibility',name:'鸽子式',muscles:'臀/梨状肌',desc:'前腿屈膝横放，后腿伸直，身体前倾，深度拉伸臀部。',diff:'intermediate',icon:'🕊️'},
+  {id:'f3',cat:'flexibility',name:'婴儿式',muscles:'背/肩/髋',desc:'跪坐，身体前倾额头贴地，手臂前伸或放体侧，完全放松。',diff:'beginner',icon:'👶'},
+  {id:'f4',cat:'flexibility',name:'胸椎旋转',muscles:'胸椎/背',desc:'四足位，一手放脑后，吸气旋转胸椎向上，呼气回正。改善胸椎活动度。',diff:'beginner',icon:'🔃'}
+];
+
+// ==================== App State ====================
+var APP_STATE = {
+  screen:'history', currentStep:1, clientType:'', animDir:1,
+  formData:{
+    age:'', gender:'', height:'', weight:'', trainingYears:'', trainingLevel:'',
+    teamSize:'', teamAvgAge:'', teamAvgLevel:'',
+    injury:'', trainingDuration:'', equipment:'', venue:'',
+    goals:[], trainingModes:[], sportType:'', extraNotes:'',
+    periodType:'micro', trainingDaysPerWeek:'3', currentPhase:'prep', periodGoal:'general_fitness'
+  },
+  generatedPlan:null, currentPlanId:null
+};
+
+// ==================== LocalStorage ====================
+function lsGet(k,f){try{var v=localStorage.getItem('fc_'+k);return v?JSON.parse(v):f;}catch(e){return f;}}
+function lsSet(k,v){try{localStorage.setItem('fc_'+k,JSON.stringify(v));}catch(e){}}
+function lsDel(k){try{localStorage.removeItem('fc_'+k);}catch(e){}}
 
 // ==================== Toast ====================
-function showToast(msg, type = 'info', duration = 3000) {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.textContent = msg;
-  container.appendChild(toast);
-  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, duration - 300);
-  setTimeout(() => toast.remove(), duration);
+function showToast(msg,type,dur){
+  type=type||'info';dur=dur||3000;
+  var c=document.getElementById('toastContainer');
+  var t=document.createElement('div');t.className='toast '+type;t.textContent=msg;
+  c.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';t.style.transition='opacity 0.3s';},dur-300);
+  setTimeout(function(){t.remove();},dur);
 }
 
 // ==================== Navigation ====================
-function navigateTo(screen) {
-  APP_STATE.screen = screen;
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
-  render();
+function navigateTo(screen){
+  if(screen==='wizard'&&APP_STATE.screen==='wizard'){
+    APP_STATE.currentStep=1;APP_STATE.clientType='';APP_STATE.formData.goals=[];
+    APP_STATE.formData.trainingModes=[];APP_STATE.generatedPlan=null;
+  }
+  APP_STATE.screen=screen;
+  if(screen==='wizard')APP_STATE.animDir=1;else if(APP_STATE.animDir===0)APP_STATE.animDir=-1;
+  var navs=document.querySelectorAll('.nav-item');
+  for(var i=0;i<navs.length;i++){navs[i].classList.toggle('active',navs[i].dataset.screen===screen);}
+  var fab=document.getElementById('fabNew');
+  if(fab)fab.classList.toggle('hidden',screen==='wizard'||screen==='exercises');
+  render();window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ==================== Form Data Helpers ====================
-function updateForm(field, value) {
-  APP_STATE.formData[field] = value;
-}
-function toggleArrayItem(arr, item) {
-  const idx = arr.indexOf(item);
-  if (idx > -1) arr.splice(idx, 1); else arr.push(item);
-  return arr;
-}
+// ==================== Helpers ====================
+function toggleArrayItem(arr,item){var i=arr.indexOf(item);if(i>-1)arr.splice(i,1);else arr.push(item);return arr;}
+function byId(id){return document.getElementById(id);}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 
 // ==================== Main Render ====================
-function render() {
-  const main = document.getElementById('mainContent');
-  switch (APP_STATE.screen) {
-    case 'wizard': main.innerHTML = renderWizard(); break;
-    case 'history': main.innerHTML = renderHistory(); break;
-    case 'settings': main.innerHTML = renderSettings(); break;
-    case 'result': main.innerHTML = renderResult(); break;
+function render(){
+  var main=byId('mainContent');
+  var cls=APP_STATE.animDir>0?'slide-in-right':'slide-in-left';
+  if(APP_STATE.screen==='result')cls='fade-up';
+  main.className='main-content';
+  switch(APP_STATE.screen){
+    case'wizard':main.innerHTML='<div class="'+cls+'">'+renderWizard()+'</div>';break;
+    case'history':main.innerHTML='<div class="'+cls+'">'+renderHistory()+'</div>';break;
+    case'settings':main.innerHTML='<div class="'+cls+'">'+renderSettings()+'</div>';break;
+    case'result':main.innerHTML='<div class="'+cls+'">'+renderResult()+'</div>';break;
+    case'exercises':main.innerHTML='<div class="'+cls+'">'+renderExerciseLib()+'</div>';break;
   }
   bindEvents();
 }
 
-function renderWizard() {
-  const step = APP_STATE.currentStep;
-  const dots = [];
-  for (let s = 1; s <= 5; s++) {
-    let cls = 'step-dot';
-    if (s === step) cls += ' active';
-    else if (s < step) cls += ' done';
-    dots.push(`<div class="${cls}"></div>`);
-    if (s < 5) {
-      dots.push(`<div class="step-line${s < step ? ' done' : ''}"></div>`);
-    }
-  }
-
-  let html = `<div class="step-indicator">${dots.join('')}</div>`;
-
-  switch (step) {
-    case 1: html += renderStep1(); break;
-    case 2: html += renderStep2(); break;
-    case 3: html += renderStep3(); break;
-    case 4: html += renderStep4(); break;
-    case 5: html += renderStep5(); break;
-  }
-
-  // Navigation buttons
-  html += '<div class="btn-row mt-6">';
-  if (step > 1) {
-    html += `<button class="btn btn-secondary" id="btnBack">← 上一步</button>`;
-  }
-  if (step < 5) {
-    html += `<button class="btn btn-primary" id="btnNext">下一步 →</button>`;
-  }
-  html += '</div>';
-
-  if (step === 1) {
-    html = html.replace('btn-row mt-6', 'btn-row mt-6').replace('btn-secondary', 'btn-secondary hidden');
-  }
-
-  return html;
+// ==================== Wizard Render ====================
+function renderWizard(){
+  var step=APP_STATE.currentStep, ct=APP_STATE.clientType;
+  var maxSteps=ct==='period'?6:5;
+  var labels=ct==='period'?['方案类型','基本信息','训练条件','目标偏好','周期配置','生成方案']:['方案类型','基本信息','训练条件','目标偏好','生成方案'];
+  var html='<div class="step-label">';
+  for(var i=0;i<labels.length;i++){html+='<span'+(i+1===step?' class="active"':'')+'>'+labels[i]+'</span>';}
+  html+='</div><div class="step-bar">';
+  for(var s=1;s<=maxSteps;s++){var c='dot';if(s===step)c+=' active';else if(s<step)c+=' done';html+='<div class="'+c+'"></div>';}
+  html+='</div>';
+  switch(step){case 1:html+=renderStep1();break;case 2:html+=renderStep2();break;case 3:html+=renderStep3();break;case 4:html+=renderStep4();break;case 5:html+=ct==='period'?renderPeriodStep():renderStep5();break;case 6:html+=renderStep5();break;}
+  html+='<div class="btn-row mt-6">';
+  if(step>1)html+='<button class="btn btn-secondary" id="btnBack">← 上一步</button>';else html+='<div></div>';
+  if(step<maxSteps)html+='<button class="btn btn-primary" id="btnNext">下一步 →</button>';
+  html+='</div>';return html;
 }
 
-function renderStep1() {
-  const ct = APP_STATE.clientType;
-  return `
-    <div class="card fade-in">
-      <div class="card-header">
-        <div class="label">Step 1 / 5</div>
-        <div class="title">选择客户类型</div>
-        <div class="subtitle">这将决定方案的结构和侧重点</div>
-      </div>
-      <div class="client-grid">
-        <div class="client-card ${ct==='personal'?'selected':''}" data-type="personal">
-          <span class="emoji">🧑</span>
-          <div class="info">
-            <h3>私教一对一</h3>
-            <p>量身定制个人训练方案 · 减脂/增肌/功能性提升</p>
-          </div>
-        </div>
-        <div class="client-card ${ct==='athlete'?'selected':''}" data-type="athlete">
-          <span class="emoji">🏅</span>
-          <div class="info">
-            <h3>运动员专项</h3>
-            <p>运动项目体能训练 · 爆发力/耐力/专项表现</p>
-          </div>
-        </div>
-        <div class="client-card ${ct==='team'?'selected':''}" data-type="team">
-          <span class="emoji">👥</span>
-          <div class="info">
-            <h3>多人团队课程</h3>
-            <p>2-20人团队训练 · 兼顾训练效果与团队氛围</p>
-          </div>
-        </div>
-      </div>
-    </div>`;
-}
-
-function renderStep2() {
-  const fd = APP_STATE.formData;
-  const ct = APP_STATE.clientType;
-  let html = `
-    <div class="card slide-right">
-      <div class="card-header">
-        <div class="label">Step 2 / 5</div>
-        <div class="title">${ct==='team'?'团队概况':'基本信息'}</div>
-        <div class="subtitle">${ct==='team'?'填写团队规模与平均数据':'填写运动员的身体参数与训练背景'}</div>
-      </div>`;
-
-  if (ct === 'team') {
-    html += `
-      <div class="form-group"><label class="form-label">团队人数 <span class="required">*</span></label>
-        <input type="number" class="form-input" id="fd_teamSize" value="${fd.teamSize}" placeholder="2-20人" min="2" max="20"></div>
-      <div class="form-group"><label class="form-label">平均年龄</label>
-        <input type="number" class="form-input" id="fd_teamAvgAge" value="${fd.teamAvgAge}" placeholder="例：28" min="10" max="80"></div>
-      <div class="form-group"><label class="form-label">平均训练水平</label>
-        <select class="form-select" id="fd_teamAvgLevel">
-          <option value="">请选择</option>
-          ${TRAINING_LEVELS.map(l => `<option value="${l.value}" ${fd.teamAvgLevel===l.value?'selected':''}>${l.label}</option>`).join('')}
-        </select></div>`;
-  } else {
-    html += `
-      <div class="form-group"><label class="form-label">年龄 <span class="required">*</span></label>
-        <input type="number" class="form-input" id="fd_age" value="${fd.age}" placeholder="例：25" min="10" max="80"></div>
-      <div class="form-group"><label class="form-label">性别</label>
-        <select class="form-select" id="fd_gender">
-          <option value="">请选择</option>
-          <option value="male" ${fd.gender==='male'?'selected':''}>男</option>
-          <option value="female" ${fd.gender==='female'?'selected':''}>女</option>
-        </select></div>
-      <div class="form-group"><label class="form-label">身高 / 体重</label>
-        <div style="display:flex;gap:8px;">
-          <input type="number" class="form-input" id="fd_height" value="${fd.height}" placeholder="身高 cm" style="flex:1">
-          <input type="number" class="form-input" id="fd_weight" value="${fd.weight}" placeholder="体重 kg" style="flex:1">
-        </div></div>
-      <div class="form-group"><label class="form-label">训练年限</label>
-        <input type="text" class="form-input" id="fd_trainingYears" value="${fd.trainingYears}" placeholder="例：2年 或 6个月"></div>
-      <div class="form-group"><label class="form-label">训练水平 <span class="required">*</span></label>
-        <select class="form-select" id="fd_trainingLevel">
-          <option value="">请选择</option>
-          ${TRAINING_LEVELS.map(l => `<option value="${l.value}" ${fd.trainingLevel===l.value?'selected':''}>${l.label}</option>`).join('')}
-        </select></div>`;
-  }
-
-  if (ct === 'athlete') {
-    html += `
-      <div class="form-group"><label class="form-label">运动项目 <span class="required">*</span></label>
-        <select class="form-select" id="fd_sportType">
-          <option value="">请选择</option>
-          ${SPORT_TYPES.map(s => `<option value="${s}" ${fd.sportType===s?'selected':''}>${s}</option>`).join('')}
-        </select>
-        <div class="form-hint">将基于所选项目设计专项体能训练</div></div>`;
-  }
-
-  html += '</div>';
-  return html;
-}
-
-function renderStep3() {
-  const fd = APP_STATE.formData;
-  const eqOptions = [
-    { value: 'full_gym', label: '齐全力量房（杠铃/哑铃/深蹲架）' },
-    { value: 'functional', label: '基础功能器械（弹力带/跳箱/药球）' },
-    { value: 'minimal', label: '简易器械/自重训练' },
-    { value: 'cardio', label: '有氧设备为主（跑步机/划船机）' },
+function renderStep1(){
+  var ct=APP_STATE.clientType;
+  var cards=[
+    {type:'personal',emoji:'🧑',title:'私教一对一',desc:'量身定制 · 减脂/增肌/功能性'},
+    {type:'athlete',emoji:'🏅',title:'运动员专项',desc:'运动项目体能 · 爆发力/耐力'},
+    {type:'team',emoji:'👥',title:'多人团队课',desc:'2-20人 · 兼顾效果与氛围'},
+    {type:'period',emoji:'📅',title:'周期训练计划',desc:'1-12周周期化 · 渐进负荷'}
   ];
-  const venueOptions = [
-    { value: 'gym', label: '综合健身房' },
-    { value: 'studio', label: '小型体能训练馆' },
-    { value: 'outdoor', label: '户外场地' },
-    { value: 'court', label: '专项场地（球场/跑道）' },
-    { value: 'home', label: '家中训练' },
-  ];
-
-  return `
-    <div class="card slide-right">
-      <div class="card-header">
-        <div class="label">Step 3 / 5</div>
-        <div class="title">健康与训练条件</div>
-        <div class="subtitle">确保方案安全且可执行</div>
-      </div>
-      <div class="form-group"><label class="form-label">伤病史 / 身体限制</label>
-        <select class="form-select" id="fd_injury">
-          <option value="">请选择</option>
-          ${INJURY_OPTIONS.map(o => `<option value="${o.value}" ${fd.injury===o.value?'selected':''}>${o.label}</option>`).join('')}
-        </select></div>
-      <div class="form-group"><label class="form-label">每次训练时长（分钟）</label>
-        <select class="form-select" id="fd_trainingDuration">
-          <option value="">请选择</option>
-          <option value="30" ${fd.trainingDuration==='30'?'selected':''}>30分钟（快速训练）</option>
-          <option value="45" ${fd.trainingDuration==='45'?'selected':''}>45分钟</option>
-          <option value="60" ${fd.trainingDuration==='60'?'selected':''}>60分钟（标准课）</option>
-          <option value="75" ${fd.trainingDuration==='75'?'selected':''}>75分钟</option>
-          <option value="90" ${fd.trainingDuration==='90'?'selected':''}>90分钟（全面训练）</option>
-          <option value="120" ${fd.trainingDuration==='120'?'selected':''}>120分钟（深度训练）</option>
-        </select></div>
-      <div class="form-group"><label class="form-label">可用器械</label>
-        <select class="form-select" id="fd_equipment">
-          <option value="">请选择</option>
-          ${eqOptions.map(o => `<option value="${o.value}" ${fd.equipment===o.value?'selected':''}>${o.label}</option>`).join('')}
-        </select></div>
-      <div class="form-group"><label class="form-label">训练场地</label>
-        <select class="form-select" id="fd_venue">
-          <option value="">请选择</option>
-          ${venueOptions.map(o => `<option value="${o.value}" ${fd.venue===o.value?'selected':''}>${o.label}</option>`).join('')}
-        </select></div>
-    </div>`;
+  var html='<div class="card highlight"><div class="card-header"><div class="step-badge">Step 1 / '+(ct==='period'?6:5)+'</div><div class="title">选择方案类型</div><div class="subtitle">决定训练方案的结构和输出格式</div></div><div class="client-grid three">';
+  for(var i=0;i<cards.length;i++){html+='<div class="client-card'+(ct===cards[i].type?' selected':'')+'" data-type="'+cards[i].type+'"><span class="cc-emoji">'+cards[i].emoji+'</span><span class="cc-title">'+cards[i].title+'</span><span class="cc-desc">'+cards[i].desc+'</span></div>';}
+  html+='</div></div>';return html;
 }
 
-function renderStep4() {
-  const fd = APP_STATE.formData;
-  let html = `
-    <div class="card slide-right">
-      <div class="card-header">
-        <div class="label">Step 4 / 5</div>
-        <div class="title">目标与训练偏好</div>
-        <div class="subtitle">精准定位，方案才能有的放矢</div>
-      </div>
-
-      <div class="form-group"><label class="form-label">训练目标（可多选）</label>
-        <div class="chip-grid" id="goalChips">
-          ${GOAL_OPTIONS.map(g => `<span class="chip ${fd.goals.includes(g.id)?'selected':''}" data-goal="${g.id}">${g.icon} ${g.label}</span>`).join('')}
-        </div></div>
-
-      <div class="form-group"><label class="form-label">训练模式偏好（可多选，不选则AI自动推荐）</label>
-        <div class="chip-grid" id="modeChips">
-          ${TRAINING_MODES.map(m => `<span class="chip ${fd.trainingModes.includes(m.id)?'selected':''}" data-mode="${m.id}">${m.icon} ${m.label}</span>`).join('')}
-        </div></div>
-
-      <div class="form-group"><label class="form-label">补充说明</label>
-        <textarea class="form-textarea" id="fd_extraNotes" placeholder="任何额外需求、限制条件、特殊偏好…">${fd.extraNotes||''}</textarea></div>
-    </div>`;
-  return html;
-}
-
-function renderStep5() {
-  const ct = APP_STATE.clientType;
-  const ctLabel = ct === 'personal' ? '私教一对一' : ct === 'athlete' ? '运动员专项' : '多人团队课程';
-  return `
-    <div class="card slide-right">
-      <div class="card-header">
-        <div class="label">Step 5 / 5</div>
-        <div class="title">🔍 联网搜索 & 方案生成</div>
-        <div class="subtitle">DeepSeek v4 Pro 将自动搜索2026年最新训练科学研究，然后为你生成个性化方案</div>
-      </div>
-      <div style="background:var(--bg-secondary);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
-        <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px;">📋 方案摘要确认：</div>
-        <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.8;">
-          👤 客户类型：<strong>${ctLabel}</strong><br>
-          ${ct==='team'? `👥 团队人数：<strong>${APP_STATE.formData.teamSize||'未填'}人</strong> · 平均水平：<strong>${APP_STATE.formData.teamAvgLevel||'未填'}</strong>` : `🎂 年龄：<strong>${APP_STATE.formData.age||'未填'}岁</strong> · 水平：<strong>${APP_STATE.formData.trainingLevel||'未填'}</strong>`}<br>
-          ${ct==='athlete' && APP_STATE.formData.sportType ? `🏅 运动项目：<strong>${APP_STATE.formData.sportType}</strong><br>` : ''}
-          ⏱️ 训练时长：<strong>${APP_STATE.formData.trainingDuration||'未填'}分钟</strong><br>
-          🎯 目标：<strong>${APP_STATE.formData.goals.length>0 ? APP_STATE.formData.goals.map(g => GOAL_OPTIONS.find(o=>o.id===g)?.label||g).join('、') : '综合体能'}</strong>
-        </div>
-      </div>
-      <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:8px;">💡 点击生成后，系统将自动联网搜索2026年最新训练方法和循证研究</p>
-      <button class="btn btn-primary btn-block btn-lg" id="btnGenerate">
-        🚀 联网搜索并生成方案
-      </button>
-      <div id="loadingArea"></div>
-    </div>`;
-}
-
-function renderResult() {
-  const plan = APP_STATE.generatedPlan;
-  if (!plan) {
-    APP_STATE.screen = 'wizard';
-    APP_STATE.currentStep = 1;
-    return renderWizard();
+function renderStep2(){
+  var fd=APP_STATE.formData, ct=APP_STATE.clientType;
+  var html='<div class="card"><div class="card-header"><div class="step-badge">Step 2 / '+(ct==='period'?6:5)+'</div><div class="title">'+(ct==='team'?'团队概况':'基本信息')+'</div><div class="subtitle">'+(ct==='team'?'团队规模与平均数据':'运动员身体参数与训练背景')+'</div></div>';
+  if(ct==='team'){
+    html+='<div class="form-group"><label class="form-label">团队人数 <span class="req">*</span></label><input type="number" class="form-input" id="fd_teamSize" value="'+fd.teamSize+'" placeholder="2-20人" min="2" max="20"></div>';
+    html+='<div class="form-group"><label class="form-label">平均年龄</label><input type="number" class="form-input" id="fd_teamAvgAge" value="'+fd.teamAvgAge+'" placeholder="例：28" min="10" max="80"></div>';
+    html+='<div class="form-group"><label class="form-label">平均训练水平</label><select class="form-select" id="fd_teamAvgLevel"><option value="">请选择</option>';
+    for(var i=0;i<TRAINING_LEVELS.length;i++){html+='<option value="'+TRAINING_LEVELS[i].value+'"'+(fd.teamAvgLevel===TRAINING_LEVELS[i].value?' selected':'')+'>'+TRAINING_LEVELS[i].label+'</option>';}
+    html+='</select></div>';
+  }else if(ct==='period'){
+    html+='<div class="form-group"><label class="form-label">年龄 <span class="req">*</span></label><input type="number" class="form-input" id="fd_age" value="'+fd.age+'" placeholder="例：25" min="10" max="80"></div>';
+    html+='<div class="form-group"><label class="form-label">训练水平 <span class="req">*</span></label><select class="form-select" id="fd_trainingLevel"><option value="">请选择</option>';
+    for(var i=0;i<TRAINING_LEVELS.length;i++){html+='<option value="'+TRAINING_LEVELS[i].value+'"'+(fd.trainingLevel===TRAINING_LEVELS[i].value?' selected':'')+'>'+TRAINING_LEVELS[i].label+'</option>';}
+    html+='</select></div>';
+    html+='<div class="form-group"><label class="form-label">训练年限</label><input type="text" class="form-input" id="fd_trainingYears" value="'+fd.trainingYears+'" placeholder="例：2年"></div>';
+  }else{
+    html+='<div class="form-group"><label class="form-label">年龄 <span class="req">*</span></label><input type="number" class="form-input" id="fd_age" value="'+fd.age+'" placeholder="例：25" min="10" max="80"></div>';
+    html+='<div class="form-row"><div class="form-group"><label class="form-label">性别</label><select class="form-select" id="fd_gender"><option value="">请选择</option><option value="male"'+(fd.gender==='male'?' selected':'')+'>男</option><option value="female"'+(fd.gender==='female'?' selected':'')+'>女</option></select></div><div class="form-group"><label class="form-label">训练水平 <span class="req">*</span></label><select class="form-select" id="fd_trainingLevel"><option value="">请选择</option>';
+    for(var i=0;i<TRAINING_LEVELS.length;i++){html+='<option value="'+TRAINING_LEVELS[i].value+'"'+(fd.trainingLevel===TRAINING_LEVELS[i].value?' selected':'')+'>'+TRAINING_LEVELS[i].label+'</option>';}
+    html+='</select></div></div>';
+    html+='<div class="form-row"><div class="form-group"><label class="form-label">身高 (cm)</label><input type="number" class="form-input" id="fd_height" value="'+fd.height+'" placeholder="身高"></div><div class="form-group"><label class="form-label">体重 (kg)</label><input type="number" class="form-input" id="fd_weight" value="'+fd.weight+'" placeholder="体重"></div></div>';
+    html+='<div class="form-group"><label class="form-label">训练年限</label><input type="text" class="form-input" id="fd_trainingYears" value="'+fd.trainingYears+'" placeholder="例：2年 或 6个月"></div>';
   }
-  let html = `
-    <div class="plan-container fade-in">
-      <div class="plan-header">
-        <div class="plan-title">📋 生成完毕 · 训练方案</div>
-        <div class="plan-meta">
-          <span class="tag">${APP_STATE.clientType==='personal'?'私教一对一':APP_STATE.clientType==='athlete'?'运动员专项':'团队课程'}</span>
-          ${APP_STATE.formData.goals.map(g => `<span class="tag">${GOAL_OPTIONS.find(o=>o.id===g)?.label||g}</span>`).join('')}
-          ${APP_STATE.formData.trainingModes.map(m => `<span class="tag">${TRAINING_MODES.find(o=>o.id===m)?.label||m}</span>`).join('')}
-        </div>
-      </div>
-      <div class="plan-body">${parseMarkdown(plan)}</div>
-    </div>
-    <div class="btn-row mt-4">
-      <button class="btn btn-secondary" id="btnCopyPlan">📋 一键复制</button>
-      <button class="btn btn-primary" id="btnNewPlan">✨ 生成新方案</button>
-    </div>
-  `;
-  return html;
-}
-
-function renderHistory() {
-  const history = lsGet('history', []);
-  if (history.length === 0) {
-    return `
-      <div class="card text-center" style="padding:48px 20px;">
-        <div style="font-size:3rem;margin-bottom:16px;">📭</div>
-        <h3>暂无历史方案</h3>
-        <p style="color:var(--text-muted);margin-top:8px;">生成训练方案后会自动保存在这里</p>
-        <button class="btn btn-primary mt-4" onclick="APP_STATE.screen='wizard';APP_STATE.currentStep=1;render();">✨ 去生成第一个方案</button>
-      </div>`;
+  if(ct==='athlete'){
+    html+='<div class="form-group"><label class="form-label">运动项目 <span class="req">*</span></label><select class="form-select" id="fd_sportType"><option value="">请选择</option>';
+    for(var i=0;i<SPORT_TYPES.length;i++){html+='<option value="'+SPORT_TYPES[i]+'"'+(fd.sportType===SPORT_TYPES[i]?' selected':'')+'>'+SPORT_TYPES[i]+'</option>';}
+    html+='</select><div class="form-hint">将基于所选项目设计专项体能训练</div></div>';
   }
-  let html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">';
-  html += '<h2>📋 历史方案</h2>';
-  html += `<button class="btn btn-sm btn-secondary" id="btnClearHistory">🗑️ 清空</button></div>`;
-  history.reverse().forEach((h, i) => {
-    const ctLabel = h.clientType === 'personal' ? '🧑 私教' : h.clientType === 'athlete' ? '🏅 运动员' : '👥 团队';
-    html += `
-      <div class="history-item" data-history-id="${h.id}">
-        <div class="hi-header">
-          <span class="hi-type">${ctLabel}</span>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span class="hi-date">${new Date(h.timestamp).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
-            <button class="icon-btn" data-delete-id="${h.id}" style="width:28px;height:28px;font-size:0.8rem;flex-shrink:0;" title="删除">🗑️</button>
-          </div>
-        </div>
-        <div class="hi-info">${h.summary}</div>
-        <span class="hi-goal">${h.goals}</span>
-      </div>`;
-  });
+  html+='</div>';return html;
+}
+
+function renderStep3(){
+  var fd=APP_STATE.formData;
+  var eqOpts=[{v:'full_gym',l:'齐全力量房'},{v:'functional',l:'基础功能器械'},{v:'minimal',l:'简易器械/自重'},{v:'cardio',l:'有氧设备为主'}];
+  var vOpts=[{v:'gym',l:'综合健身房'},{v:'studio',l:'小型体能馆'},{v:'outdoor',l:'户外场地'},{v:'court',l:'专项场地(球场/跑道)'},{v:'home',l:'家中训练'}];
+  var html='<div class="card"><div class="card-header"><div class="step-badge">Step 3 / '+(APP_STATE.clientType==='period'?6:5)+'</div><div class="title">健康与训练条件</div><div class="subtitle">确保方案安全且可执行</div></div>';
+  html+='<div class="form-group"><label class="form-label">伤病史 / 身体限制</label><select class="form-select" id="fd_injury"><option value="">请选择</option>';
+  for(var i=0;i<INJURY_OPTIONS.length;i++){html+='<option value="'+INJURY_OPTIONS[i].value+'"'+(fd.injury===INJURY_OPTIONS[i].value?' selected':'')+'>'+INJURY_OPTIONS[i].label+'</option>';}
+  html+='</select></div>';
+  html+='<div class="form-group"><label class="form-label">每次训练时长（分钟）</label><select class="form-select" id="fd_trainingDuration"><option value="">请选择</option>';
+  [30,45,60,75,90,120].forEach(function(m){html+='<option value="'+m+'"'+(fd.trainingDuration==m?' selected':'')+'>'+m+'分钟'+(m===60?'（标准课）':'')+'</option>';});
+  html+='</select></div>';
+  html+='<div class="form-group"><label class="form-label">可用器械</label><select class="form-select" id="fd_equipment"><option value="">请选择</option>';
+  for(var i=0;i<eqOpts.length;i++){html+='<option value="'+eqOpts[i].v+'"'+(fd.equipment===eqOpts[i].v?' selected':'')+'>'+eqOpts[i].l+'</option>';}
+  html+='</select></div>';
+  html+='<div class="form-group"><label class="form-label">训练场地</label><select class="form-select" id="fd_venue"><option value="">请选择</option>';
+  for(var i=0;i<vOpts.length;i++){html+='<option value="'+vOpts[i].v+'"'+(fd.venue===vOpts[i].v?' selected':'')+'>'+vOpts[i].l+'</option>';}
+  html+='</select></div></div>';return html;
+}
+
+function renderStep4(){
+  var fd=APP_STATE.formData;
+  var html='<div class="card"><div class="card-header"><div class="step-badge">Step 4 / '+(APP_STATE.clientType==='period'?6:5)+'</div><div class="title">目标与训练偏好</div><div class="subtitle">精准定位，方案才能有的放矢</div></div>';
+  html+='<div class="form-group"><label class="form-label">训练目标（可多选）</label><div class="chip-grid" id="goalChips">';
+  for(var i=0;i<GOAL_OPTIONS.length;i++){html+='<span class="chip'+(fd.goals.indexOf(GOAL_OPTIONS[i].id)>-1?' selected':'')+'" data-goal="'+GOAL_OPTIONS[i].id+'">'+GOAL_OPTIONS[i].icon+' '+GOAL_OPTIONS[i].label+'</span>';}
+  html+='</div></div>';
+  html+='<div class="form-group"><label class="form-label">训练模式偏好（可多选，不选则AI自动推荐）</label><div class="chip-grid" id="modeChips">';
+  for(var i=0;i<TRAINING_MODES.length;i++){html+='<span class="chip'+(fd.trainingModes.indexOf(TRAINING_MODES[i].id)>-1?' selected':'')+'" data-mode="'+TRAINING_MODES[i].id+'">'+TRAINING_MODES[i].icon+' '+TRAINING_MODES[i].label+'</span>';}
+  html+='</div></div>';
+  html+='<div class="form-group"><label class="form-label">补充说明</label><textarea class="form-textarea" id="fd_extraNotes" placeholder="任何额外需求、限制条件、特殊偏好...">'+(fd.extraNotes||'')+'</textarea></div></div>';
   return html;
 }
 
-function renderSettings() {
-  const apiKey = lsGet('apiKey', '');
-  const maskedKey = apiKey ? apiKey.slice(0,6) + '••••••••' + apiKey.slice(-4) : '';
-  const theme = lsGet('theme', 'dark');
-  const searchMode = lsGet('searchMode', 'thorough');
-  const modelName = lsGet('modelName', 'deepseek-chat');
+function renderPeriodStep(){
+  var fd=APP_STATE.formData;
+  var html='<div class="card"><div class="card-header"><div class="step-badge">Step 5 / 6</div><div class="title">📅 周期训练配置</div><div class="subtitle">设定周期参数，生成系统化渐进负荷方案</div></div>';
+  html+='<div class="form-group"><label class="form-label">周期长度</label><div class="chip-grid" id="periodTypeChips">';
+  for(var i=0;i<PERIOD_TYPES.length;i++){html+='<span class="chip'+(fd.periodType===PERIOD_TYPES[i].value?' selected':'')+'" data-ptype="'+PERIOD_TYPES[i].value+'">'+PERIOD_TYPES[i].label+'</span>';}
+  html+='</div></div>';
+  html+='<div class="form-group"><label class="form-label">当前训练阶段</label><div class="chip-grid" id="phaseChips">';
+  for(var i=0;i<PERIOD_PHASES.length;i++){html+='<span class="chip'+(fd.currentPhase===PERIOD_PHASES[i].value?' selected':'')+'" data-phase="'+PERIOD_PHASES[i].value+'">'+PERIOD_PHASES[i].label+'</span>';}
+  html+='</div></div>';
+  html+='<div class="form-row"><div class="form-group"><label class="form-label">每周训练天数</label><select class="form-select" id="fd_trainingDays"><option value="">请选择</option>';
+  [2,3,4,5,6].forEach(function(d){html+='<option value="'+d+'"'+(fd.trainingDaysPerWeek==d?' selected':'')+'>'+d+'天/周</option>';});
+  html+='</select></div></div>';
+  html+='<div class="form-group"><label class="form-label">核心目标</label><select class="form-select" id="fd_periodGoal"><option value="general_fitness"'+(fd.periodGoal==='general_fitness'?' selected':'')+'>综合体能提升</option><option value="peak_strength"'+(fd.periodGoal==='peak_strength'?' selected':'')+'>峰值力量发展</option><option value="endurance"'+(fd.periodGoal==='endurance'?' selected':'')+'>耐力提升</option><option value="fat_loss"'+(fd.periodGoal==='fat_loss'?' selected':'')+'>减脂塑形</option><option value="competition_prep"'+(fd.periodGoal==='competition_prep'?' selected':'')+'>比赛准备</option></select></div></div>';
+  return html;
+}
 
-  return `
-    <div class="card fade-in">
-      <div class="card-header">
-        <div class="label">设置</div>
-        <div class="title">⚙️ API 与偏好设置</div>
-        <div class="subtitle">配置 DeepSeek API 和应用参数</div>
-      </div>
+function renderStep5(){
+  var ct=APP_STATE.clientType, fd=APP_STATE.formData;
+  var ctLabel=ct==='personal'?'私教一对一':ct==='athlete'?'运动员专项':ct==='team'?'多人团队课程':'周期训练计划';
+  var ctEmoji=ct==='personal'?'🧑':ct==='athlete'?'🏅':ct==='team'?'👥':'📅';
+  var summary=ct==='team'?'👥 团队人数：<strong>'+(fd.teamSize||'未填')+'人</strong> · 水平：<strong>'+(fd.teamAvgLevel||'未填')+'</strong>':'🎂 年龄：<strong>'+(fd.age||'未填')+'岁</strong> · 水平：<strong>'+(fd.trainingLevel||'未填')+'</strong>';
+  if(ct==='period')summary+='<br>📅 周期：<strong>'+(PERIOD_TYPES.find(function(p){return p.value===fd.periodType;})||{}).label+'</strong> · 每周<strong>'+(fd.trainingDaysPerWeek||'?')+'天</strong> · <strong>'+(PERIOD_PHASES.find(function(p){return p.value===fd.currentPhase;})||{}).label+'</strong>';
+  if(ct==='athlete'&&fd.sportType)summary+='<br>🏅 运动项目：<strong>'+fd.sportType+'</strong>';
+  summary+='<br>⏱️ 训练时长：<strong>'+(fd.trainingDuration||'未填')+'分钟</strong>';
+  var goals=fd.goals.length>0?fd.goals.map(function(g){var o=GOAL_OPTIONS.find(function(x){return x.id===g;});return o?o.label:g;}).join('、'):'综合体能';
+  summary+='<br>🎯 目标：<strong>'+goals+'</strong>';
+  var lastStep=ct==='period'?'6':'5';
+  return '<div class="card"><div class="card-header"><div class="step-badge">Step '+lastStep+' / '+lastStep+'</div><div class="title">🔍 确认 & 生成方案</div><div class="subtitle">AI将基于2026年最新训练科学研究生成个性化方案</div></div><div style="background:var(--bg-secondary);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:0.85rem;color:var(--text-secondary);line-height:1.9;">'+ctEmoji+' 方案类型：<strong style="color:var(--text-primary);">'+ctLabel+'</strong><br>'+summary+'</div><p style="color:var(--text-muted);font-size:0.75rem;margin-bottom:10px;">💡 AI将自动整合最新训练科学研究成果，生成安全、科学、个性化的方案</p><button class="btn btn-primary btn-block btn-lg" id="btnGenerate">🚀 生成训练方案</button><div id="loadingArea"></div></div>';
+}
 
-      <div class="form-group">
-        <label class="form-label">🔑 DeepSeek API Key</label>
-        <div style="display:flex;gap:8px;">
-          <input type="password" class="form-input" id="fd_apiKey" value="${apiKey}" placeholder="sk-..." style="flex:1;">
-          <button class="btn btn-secondary btn-sm" id="btnToggleApiKey">👁️</button>
-        </div>
-        <div class="form-hint">${apiKey ? '✅ 已配置 Key: ' + maskedKey : '⚠️ 请输入 API Key 才能使用联网搜索和方案生成'}</div>
-      </div>
+// ==================== Result Render ====================
+function renderResult(){
+  var plan=APP_STATE.generatedPlan;
+  if(!plan){APP_STATE.screen='wizard';APP_STATE.currentStep=1;render();return;}
+  var ct=APP_STATE.clientType;
+  var ctLabel=ct==='personal'?'私教一对一':ct==='athlete'?'运动员专项':ct==='team'?'团队课程':ct==='period'?'周期训练':'方案';
+  var html='<div class="plan-container fade-up"><div class="plan-header"><div class="plan-title">📋 生成完毕 · 训练方案</div><div class="plan-meta">';
+  html+='<span class="tag">'+ctLabel+'</span>';
+  APP_STATE.formData.goals.forEach(function(g){html+='<span class="tag purple">'+(GOAL_OPTIONS.find(function(o){return o.id===g;})||{}).label+'</span>';});
+  APP_STATE.formData.trainingModes.forEach(function(m){html+='<span class="tag green">'+(TRAINING_MODES.find(function(o){return o.id===m;})||{}).label+'</span>';});
+  html+='</div></div><div class="plan-body">'+parseMarkdown(plan)+'</div></div><div class="btn-row mt-4"><button class="btn btn-secondary" id="btnCopyPlan">📋 一键复制</button><button class="btn btn-primary" id="btnNewPlan">✨ 生成新方案</button></div>';
+  return html;
+}
 
-      <div class="form-group">
-        <label class="form-label">🤖 模型选择</label>
-        <select class="form-select" id="fd_modelName">
-          <option value="deepseek-chat" ${modelName==='deepseek-chat'?'selected':''}>DeepSeek V3（最新旗舰 · 生成快）</option>
-          <option value="deepseek-reasoner" ${modelName==='deepseek-reasoner'?'selected':''}>DeepSeek R1（深度推理 · 方案更细致）</option>
-        </select>
-        <div class="form-hint">💡 V3 = DeepSeek 最新对话模型，速度快；R1 = 深度思考，方案更周全但稍慢</div>
-      </div>
+// ==================== History Render ====================
+function renderHistory(){
+  var history=lsGet('history',[]);
+  if(!history.length)return '<div class="card text-center" style="padding:40px 20px;"><div style="font-size:3rem;">📭</div><h3>暂无历史方案</h3><p style="color:var(--text-muted);margin-top:6px;">生成方案后会自动保存在这里</p><button class="btn btn-primary mt-4" onclick="navigateTo(\'wizard\')">✨ 生成第一个方案</button></div>';
+  var html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;"><h2>📋 历史方案</h2><button class="btn btn-sm btn-secondary" id="btnClearHistory">🗑️ 清空</button></div>';
+  var reversed=[].concat(history).reverse();
+  var labels={personal:'🧑 私教',athlete:'🏅 运动员',team:'👥 团队',period:'📅 周期'};
+  for(var i=0;i<reversed.length;i++){
+    var h=reversed[i];
+    html+='<div class="history-item" data-history-id="'+h.id+'"><div class="hi-header"><span class="hi-type">'+(labels[h.clientType]||'📋 方案')+'</span><div style="display:flex;align-items:center;gap:6px;"><span class="hi-date">'+new Date(h.timestamp).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})+'</span><button class="icon-btn" data-delete-id="'+h.id+'" style="width:26px;height:26px;font-size:0.7rem;" title="删除">🗑️</button></div></div><div class="hi-summary">'+h.summary+'</div><div class="hi-tags">'+(h.goals||'').split('、').map(function(g){return'<span class="tag">'+g+'</span>';}).join('')+'</div></div>';
+  }
+  return html;
+}
 
-      <div class="form-group">
-        <label class="form-label">🔍 搜索模式</label>
-        <select class="form-select" id="fd_searchMode">
-          <option value="thorough" ${searchMode==='thorough'?'selected':''}>深度搜索（3-5轮，生成更准确）</option>
-          <option value="quick" ${searchMode==='quick'?'selected':''}>快速搜索（1-2轮，生成更快）</option>
-        </select>
-      </div>
+// ==================== Settings Render ====================
+function renderSettings(){
+  var apiKey=lsGet('apiKey','');var maskedKey=apiKey?apiKey.slice(0,6)+'••••••••'+apiKey.slice(-4):'';
+  var theme=lsGet('theme','dark');var modelName=lsGet('modelName','deepseek-chat');
+  return '<div class="card"><div class="card-header"><div class="step-badge">设置</div><div class="title">⚙️ API 与偏好设置</div><div class="subtitle">配置 DeepSeek API 和应用参数</div></div><div class="form-group"><label class="form-label">🔑 DeepSeek API Key</label><div style="display:flex;gap:8px;"><input type="password" class="form-input" id="fd_apiKey" value="'+apiKey+'" placeholder="sk-..." style="flex:1"><button class="btn btn-secondary btn-sm" id="btnToggleApiKey">👁️</button></div><div class="form-hint">'+(apiKey?'✅ 已配置: '+maskedKey:'⚠️ 请输入 API Key 才能生成方案')+'</div></div><div class="form-group"><label class="form-label">🤖 模型选择</label><select class="form-select" id="fd_modelName"><option value="deepseek-chat"'+(modelName==='deepseek-chat'?' selected':'')+'>DeepSeek V3（最新旗舰 · 生成快）</option><option value="deepseek-reasoner"'+(modelName==='deepseek-reasoner'?' selected':'')+'>DeepSeek R1（深度推理 · 方案更细致）</option></select></div><div class="form-group"><label class="form-label">🎨 主题</label><select class="form-select" id="fd_theme"><option value="dark"'+(theme==='dark'?' selected':'')+'>深色主题（推荐）</option><option value="light"'+(theme==='light'?' selected':'')+'>浅色主题</option></select></div><button class="btn btn-primary btn-block mt-4" id="btnSaveSettings">💾 保存设置</button><div class="mt-4" style="font-size:0.7rem;color:var(--text-muted);text-align:center;"><p>🔐 API Key 仅存储在本地浏览器</p><p style="margin-top:3px;">获取：<a href="https://platform.deepseek.com" target="_blank" style="color:var(--info);">platform.deepseek.com</a></p></div></div>';
+}
 
-      <div class="form-group">
-        <label class="form-label">🎨 主题</label>
-        <select class="form-select" id="fd_theme">
-          <option value="dark" ${theme==='dark'?'selected':''}>深色主题（推荐·护眼）</option>
-          <option value="light" ${theme==='light'?'selected':''}>浅色主题</option>
-        </select>
-      </div>
+// ==================== Exercise Library Render ====================
+function renderExerciseLib(){
+  var html='<div class="card-header" style="margin-bottom:12px;"><div class="title">🏃 训练动作库</div><div class="subtitle">'+EXERCISES.length+'个动作 · 点击查看详情</div></div>';
+  html+='<div class="search-wrap"><span class="search-icon">🔍</span><input type="text" class="search-input" id="exSearch" placeholder="搜索动作名称或目标肌群..."></div>';
+  html+='<div class="filter-bar" id="exFilter">';
+  for(var i=0;i<EXERCISE_CATEGORIES.length;i++){html+='<span class="filter-chip'+(EXERCISE_CATEGORIES[i].id==='all'?' active':'')+'" data-cat="'+EXERCISE_CATEGORIES[i].id+'">'+EXERCISE_CATEGORIES[i].icon+' '+EXERCISE_CATEGORIES[i].label+'</span>';}
+  html+='</div><div class="exercise-grid" id="exGrid"></div>';
+  return html;
+}
 
-      <button class="btn btn-primary btn-block mt-4" id="btnSaveSettings">💾 保存设置</button>
-
-      <div class="mt-4" style="font-size:0.75rem;color:var(--text-muted);text-align:center;">
-        <p>🔐 API Key 仅存储在本地浏览器中，不会上传到任何服务器</p>
-        <p style="margin-top:4px;">获取 API Key：<a href="https://platform.deepseek.com" target="_blank" style="color:var(--info);">platform.deepseek.com</a></p>
-      </div>
-    </div>`;
+function renderExGrid(filter,search){
+  filter=filter||'all';search=search||'';
+  var grid=byId('exGrid');if(!grid)return;
+  var exs=EXERCISES;
+  if(filter!=='all')exs=exs.filter(function(e){return e.cat===filter;});
+  if(search)exs=exs.filter(function(e){return e.name.indexOf(search)>-1||e.muscles.indexOf(search)>-1||e.desc.indexOf(search)>-1;});
+  var diffLabels={beginner:'初级',intermediate:'中级',advanced:'高级'};
+  grid.innerHTML=exs.map(function(e){return'<div class="exercise-card" data-exid="'+e.id+'"><div class="ex-icon">'+e.icon+'</div><div class="ex-name">'+e.name+'</div><div class="ex-muscles">'+e.muscles+'</div><span class="ex-diff '+e.diff+'">'+diffLabels[e.diff]+'</span></div>';}).join('');
 }
 
 // ==================== Markdown Parser ====================
-function parseMarkdown(md) {
-  if (!md) return '';
-  let html = md;
-
-  // Tables
-  html = html.replace(/\n(\|.+\|)\n\|[-| :]+\|\n((?:\|.+\|\n?)+)/gm, (_, header, rows) => {
-    const hCells = header.split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
-    const rRows = rows.trim().split('\n').map(row => {
-      const cells = row.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
-      return `<tr>${cells}</tr>`;
+function parseMarkdown(md){
+  if(!md)return'';var html=md;
+  html=html.replace(/\n(\|.+\|)\n\|[-| :]+\|\n((?:\|.+\|\n?)+)/gm,function(_,header,rows){
+    var hCells=header.split('|').filter(function(c){return c.trim();}).map(function(c){return'<th>'+c.trim()+'</th>';}).join('');
+    var rRows=rows.trim().split('\n').map(function(row){
+      var cells=row.split('|').filter(function(c){return c.trim();}).map(function(c){return'<td>'+c.trim()+'</td>';}).join('');
+      return'<tr>'+cells+'</tr>';
     }).join('');
-    return `\n<table><thead><tr>${hCells}</tr></thead><tbody>${rRows}</tbody></table>\n`;
+    return'<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table><thead><tr>'+hCells+'</tr></thead><tbody>'+rRows+'</tbody></table></div>';
   });
-
-  // Code blocks
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-
-  // Headers
-  html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
-  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
-
-  // Bold and italic
-  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-
-  // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // Blockquotes
-  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
-
-  // Horizontal rules
-  html = html.replace(/^---$/gm, '<hr>');
-
-  // Unordered lists
-  html = html.replace(/^(\s*)[-*] (.+)$/gm, '$1<li>$2</li>');
-  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
-
-  // Ordered lists
-  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-  // Fix duplicate ul wrapping
-  html = html.replace(/<\/ul>\s*<ul>/g, '');
-
-  // Paragraphs (lines not already wrapped)
-  html = html.replace(/\n\n/g, '</p><p>');
-  html = '<p>' + html + '</p>';
-  html = html.replace(/<p>\s*<h([234])/g, '<h$1');
-  html = html.replace(/<\/h([234])>\s*<\/p>/g, '</h$1>');
-  html = html.replace(/<p>\s*<table/g, '<table');
-  html = html.replace(/<\/table>\s*<\/p>/g, '</table>');
-  html = html.replace(/<p>\s*<ul/g, '<ul');
-  html = html.replace(/<\/ul>\s*<\/p>/g, '</ul>');
-  html = html.replace(/<p>\s*<blockquote/g, '<blockquote');
-  html = html.replace(/<\/blockquote>\s*<\/p>/g, '</blockquote>');
-  html = html.replace(/<p>\s*<pre/g, '<pre');
-  html = html.replace(/<\/pre>\s*<\/p>/g, '</pre>');
-  html = html.replace(/<p>\s*<hr/g, '<hr');
-  html = html.replace(/<\/?p>/g, '\n'); // Clean up all p tags
-
-  // Clean up empty paragraphs
-  html = html.replace(/<p>\s*<\/p>/g, '');
-
+  html=html.replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>');
+  html=html.replace(/^#### (.+)$/gm,'<h4>$1</h4>');html=html.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  html=html.replace(/^## (.+)$/gm,'<h2>$1</h2>');html=html.replace(/^# (.+)$/gm,'<h2>$1</h2>');
+  html=html.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
+  html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');html=html.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  html=html.replace(/`([^`]+)`/g,'<code>$1</code>');html=html.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>');
+  html=html.replace(/^---$/gm,'<hr>');html=html.replace(/^(\s*)[-*] (.+)$/gm,'$1<li>$2</li>');
+  html=html.replace(/((?:<li>.*<\/li>\n?)+)/g,'<ul>$1</ul>');html=html.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+  html=html.replace(/<\/ul>\s*<ul>/g,'');html=html.replace(/<p>\s*<h([234])/g,'<h$1');html=html.replace(/<\/h([234])>\s*<\/p>/g,'</h$1');
+  html=html.replace(/<p>\s*<table|<p>\s*<div style="overflow/g,'<$1');html=html.replace(/<\/table>\s*<\/p>|<\/div>\s*<\/p>/g,'</table>');
+  html=html.replace(/<p>\s*<ul/g,'<ul');html=html.replace(/<\/ul>\s*<\/p>/g,'</ul');
+  html=html.replace(/<p>\s*<blockquote/g,'<blockquote');html=html.replace(/<\/blockquote>\s*<\/p>/g,'</blockquote');
+  html=html.replace(/<p>\s*<pre/g,'<pre');html=html.replace(/<\/pre>\s*<\/p>/g,'</pre');
   return html;
 }
 
-// ==================== DeepSeek API Client ====================
-async function callDeepSeek(messages, options = {}) {
-  const apiKey = lsGet('apiKey', '');
-  const modelName = lsGet('modelName', 'deepseek-chat');
-
-  if (!apiKey) {
-    throw new Error('请先在设置中配置 DeepSeek API Key');
-  }
-
-  const body = {
-    model: modelName,
-    messages: messages,
-    temperature: options.temperature || 0.7,
-    max_tokens: options.maxTokens || 8000,
-    stream: false,
-  };
-
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(body),
-  }).catch(e => {
-    throw new Error(`网络错误：${e.message}。请检查网络连接`);
-  });
-
-  if (!response.ok) {
-    let errMsg = `API请求失败 (${response.status})`;
-    try {
-      const err = await response.json();
-      errMsg = err.error?.message || err.message || JSON.stringify(err.error) || errMsg;
-    } catch {}
-    throw new Error(errMsg);
-  }
-
-  const data = await response.json();
-  return data.choices[0].message.content;
+// ==================== DeepSeek API ====================
+function callDeepSeek(messages,options){
+  options=options||{};
+  var apiKey=lsGet('apiKey','');var modelName=lsGet('modelName','deepseek-chat');
+  if(!apiKey)throw new Error('请先在设置中配置 DeepSeek API Key');
+  var body={model:modelName,messages:messages,temperature:options.temperature||0.7,max_tokens:options.maxTokens||8000,stream:false};
+  return fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify(body)}).then(function(response){
+    if(!response.ok){
+      var errMsg='API请求失败 ('+response.status+')';
+      return response.json().then(function(err){throw new Error(err.error?err.error.message||JSON.stringify(err.error):errMsg);}).catch(function(e){if(e.message!=='Unexpected end of JSON input')throw e;throw new Error(errMsg);});
+    }
+    return response.json();
+  }).then(function(data){return data.choices[0].message.content;}).catch(function(e){if(e.message.indexOf('API请求失败')===0||e.message.indexOf('请先')===0)throw e;throw new Error('网络错误：'+e.message);});
 }
 
 // ==================== Plan Generation ====================
-async function generatePlan() {
-  const apiKey = lsGet('apiKey', '');
-  if (!apiKey) {
-    showToast('⚠️ 请先在设置中配置 DeepSeek API Key', 'error');
-    APP_STATE.screen = 'settings';
-    render();
-    return;
+function generatePlan(){
+  var apiKey=lsGet('apiKey','');
+  if(!apiKey){showToast('⚠️ 请先在设置中配置 API Key','error');navigateTo('settings');return;}
+  var loadingArea=byId('loadingArea');if(!loadingArea)return;
+  var btnGenerate=byId('btnGenerate');if(btnGenerate)btnGenerate.disabled=true;
+
+  loadingArea.innerHTML='<div class="loading-overlay mt-4"><div class="spinner"></div><div class="loading-text" id="loadingStatus">🧠 正在分析最佳训练方案...</div><div class="loading-sub" id="loadingSub"></div><div class="progress-steps" id="progressSteps"><div class="progress-step current"><span class="ps-icon">1</span> 构造搜索关键词</div><div class="progress-step"><span class="ps-icon">2</span> 融合2026年最新研究</div><div class="progress-step"><span class="ps-icon">3</span> 生成个性化训练方案</div><div class="progress-step"><span class="ps-icon">4</span> 润色格式并输出</div></div></div>';
+
+  var ct=APP_STATE.clientType, fd=APP_STATE.formData;
+
+  var searchParts=[];
+  if(ct==='athlete'&&fd.sportType)searchParts.push(fd.sportType+' 专项体能训练');
+  fd.goals.forEach(function(g){searchParts.push((GOAL_OPTIONS.find(function(o){return o.id===g;})||{}).label||g);});
+  fd.trainingModes.forEach(function(m){searchParts.push((TRAINING_MODES.find(function(o){return o.id===m;})||{}).label||m);});
+  if(fd.injury&&fd.injury!=='none')searchParts.push((INJURY_OPTIONS.find(function(o){return o.value===fd.injury;})||{}).label||fd.injury);
+  var ageTag=fd.age?fd.age+'岁':fd.teamAvgAge?fd.teamAvgAge+'岁':'';
+  var searchQuery='2026年最新 '+searchParts.join(' ')+' '+ageTag+' '+(fd.trainingLevel||'')+' 训练方法 循证医学';
+  searchQuery=searchQuery.trim();
+
+  var systemPrompt=buildSystemPrompt();
+  var userPrompt=buildUserPrompt();
+
+  var messages=[{role:'system',content:systemPrompt},{role:'user',content:'请基于以下信息生成专业的训练方案。搜索主题：'+searchQuery+'\n\n'+userPrompt+'\n\n重要：\n1. 在方案中明确引用系统提示中的相关2026年研究\n2. 严格按照指定的输出格式\n3. 禁止使用5年以上的过时训练方法\n4. 方案要具体可执行，不要泛泛而谈'}];
+
+  function updateStep(i,s){
+    var steps=byId('progressSteps');if(!steps)return;
+    var children=steps.children;if(children&&children[i]){children[i].className='progress-step '+s;if(s==='done')children[i].querySelector('.ps-icon').textContent='✓';}
+  }
+  function updateStatus(t,s){
+    var el=byId('loadingStatus');if(el)el.textContent=t;
+    var sub=byId('loadingSub');if(sub)sub.textContent=s||'';
   }
 
-  const loadingArea = document.getElementById('loadingArea');
-  if (!loadingArea) return;
-
-  APP_STATE.currentStep = 5;
-  loadingArea.innerHTML = `
-    <div class="loading-overlay mt-4">
-      <div class="spinner"></div>
-      <div class="loading-text" id="loadingStatus">🔍 正在联网搜索2026年最新训练研究...</div>
-      <div class="loading-steps">
-        <div class="loading-step"><span class="dot current"></span> 搜索最新训练方法</div>
-        <div class="loading-step"><span class="dot"></span> 分析最适合的训练模式</div>
-        <div class="loading-step"><span class="dot"></span> 生成个性化训练方案</div>
-        <div class="loading-step"><span class="dot"></span> 润色格式 & 添加参考资料</div>
-      </div>
-    </div>`;
-  document.getElementById('btnGenerate').disabled = true;
-
-  const ct = APP_STATE.clientType;
-  const fd = APP_STATE.formData;
-  const ctLabel = ct === 'personal' ? '私教一对一' : ct === 'athlete' ? '运动员专项体能' : '多人团队课程';
-
-  try {
-    // Update loading step
-    function updateStep(idx, status) {
-      const steps = loadingArea.querySelectorAll('.loading-step .dot');
-      if (steps[idx]) {
-        steps[idx].className = 'dot ' + status;
-      }
-    }
-    function updateStatus(text) {
-      const el = document.getElementById('loadingStatus');
-      if (el) el.textContent = text;
-    }
-
-    // Step 1: Search + Generate (combined in one call with web search enabled)
-    updateStep(0, 'current');
-    updateStatus('🔍 正在搜索2026年最新训练科学研究...');
-
-    const searchKeywords = [];
-    if (ct === 'athlete' && fd.sportType) {
-      searchKeywords.push(`${fd.sportType} 专项体能训练`);
-    }
-    if (fd.goals.length > 0) {
-      const goalLabels = fd.goals.map(g => GOAL_OPTIONS.find(o=>o.id===g)?.label||g);
-      searchKeywords.push(goalLabels.join(' '));
-    }
-    if (fd.injury && fd.injury !== 'none') {
-      const injuryLabel = INJURY_OPTIONS.find(o=>o.value===fd.injury)?.label||fd.injury;
-      searchKeywords.push(`${injuryLabel} 康复训练`);
-    }
-    if (fd.trainingModes.length > 0) {
-      const modeLabels = fd.trainingModes.map(m => TRAINING_MODES.find(o=>o.id===m)?.label||m);
-      searchKeywords.push(modeLabels.join(' '));
-    }
-
-    const searchQuery = `2026年最新 ${ctLabel} ${searchKeywords.join(' ')} ${fd.age||fd.teamAvgAge||''}岁 ${fd.trainingLevel||fd.teamAvgLevel||''} 训练方法 循证医学研究`;
-
-    updateStep(0, 'done');
-    updateStep(1, 'current');
-    updateStatus('🧠 正在分析最佳训练模式组合...');
-
-    // Build comprehensive system prompt based on the fitness-coach skill
-    const systemPrompt = buildSystemPrompt();
-
-    // Build user prompt with all form data
-    const userPrompt = buildUserPrompt();
-
-    updateStep(1, 'done');
-    updateStep(2, 'current');
-    updateStatus('📝 正在生成个性化训练方案...');
-
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: `请先联网搜索以下内容，然后基于搜索结果生成训练方案：\n\n**搜索关键词：**\n${searchQuery}\n\n**客户信息：**\n${userPrompt}\n\n**重要提醒：**\n1. 必须先搜索2026年最新训练研究和方法\n2. 在方案中明确标注参考的最新研究来源\n3. 按照指定的输出格式生成完整方案\n4. 禁止使用5年以上的过时训练方法` }
-    ];
-
-    const plan = await callDeepSeek(messages, { temperature: 0.8, maxTokens: 8000 });
-
-    updateStep(2, 'done');
-    updateStep(3, 'current');
-    updateStatus('✨ 方案生成完成，正在润色...');
-
-    APP_STATE.generatedPlan = plan;
-    APP_STATE.currentPlanId = Date.now().toString(36);
-
-    // Save to history
-    saveToHistory(plan);
-
-    updateStep(3, 'done');
-    updateStatus('✅ 方案已生成！');
-
-    setTimeout(() => {
-      APP_STATE.screen = 'result';
-      render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.getElementById('bottomNav').querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    }, 600);
-
-  } catch (err) {
-    const errMsg = String(err.message || err).replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    loadingArea.innerHTML =
-      '<div class="card" style="border-color:var(--danger);margin-top:16px;">' +
-        '<div style="text-align:center;font-size:2rem;">❌</div>' +
-        '<h3 style="text-align:center;color:var(--danger);">生成失败</h3>' +
-        '<p id="errText" style="text-align:center;color:var(--text-secondary);margin-top:8px;word-break:break-all;font-size:0.85rem;background:var(--bg-input);padding:12px;border-radius:8px;">' + errMsg + '</p>' +
-        '<div class="btn-row mt-4">' +
-          '<button class="btn btn-secondary btn-sm" id="btnCopyErr">📋 复制错误</button>' +
-          '<button class="btn btn-primary btn-sm" id="btnBackToEdit">↩️ 返回修改</button>' +
-        '</div>' +
-        '<button class="btn btn-primary btn-block mt-2" id="btnRetryGen">🔄 重试</button>' +
-      '</div>';
-    document.getElementById('btnGenerate').disabled = false;
-    // Bind error panel buttons
-    document.getElementById('btnCopyErr').addEventListener('click', function(){
-      var txt = document.getElementById('errText').textContent;
-      navigator.clipboard.writeText(txt).then(function(){}, function(){});
-    });
-    document.getElementById('btnBackToEdit').addEventListener('click', function(){
-      APP_STATE.currentStep = 4;
-      APP_STATE.screen = 'wizard';
-      render();
-    });
-    document.getElementById('btnRetryGen').addEventListener('click', function(){
-      APP_STATE.currentStep = 5;
-      APP_STATE.screen = 'wizard';
-      render();
-      setTimeout(function(){ document.getElementById('btnGenerate').click(); }, 300);
-    });
-  }
+  updateStep(0,'current');updateStatus('🔍 正在构造搜索关键词...');
+  setTimeout(function(){
+    updateStep(0,'done');updateStep(1,'current');updateStatus('📚 融合2026年最新训练研究...',searchQuery);
+    setTimeout(function(){
+      updateStep(1,'done');updateStep(2,'current');updateStatus('📝 正在生成个性化训练方案...');
+      callDeepSeek(messages,{temperature:0.8,maxTokens:8000}).then(function(plan){
+        updateStep(2,'done');updateStep(3,'current');updateStatus('✨ 方案生成完毕，准备展示...');
+        APP_STATE.generatedPlan=plan;APP_STATE.currentPlanId=Date.now().toString(36);saveToHistory(plan);
+        updateStep(3,'done');updateStatus('✅ 方案已生成！','向下滑动查看完整方案');
+        setTimeout(function(){APP_STATE.screen='result';render();window.scrollTo({top:0,behavior:'smooth'});},500);
+      }).catch(function(err){
+        var errMsg=escapeHtml(String(err.message||err));
+        loadingArea.innerHTML='<div class="card" style="border-color:var(--danger);margin-top:14px;"><div style="text-align:center;font-size:2rem;">❌</div><h3 style="text-align:center;color:var(--danger);">生成失败</h3><p id="errText" style="text-align:center;color:var(--text-secondary);margin-top:6px;word-break:break-all;font-size:0.8rem;background:var(--bg-input);padding:10px;border-radius:8px;">'+errMsg+'</p><div class="btn-row mt-4"><button class="btn btn-secondary btn-sm" id="btnCopyErr">📋 复制错误</button><button class="btn btn-primary btn-sm" id="btnBackToEdit">↩️ 返回修改</button></div><button class="btn btn-primary btn-block mt-2" id="btnRetryGen">🔄 重试</button></div>';
+        if(btnGenerate)btnGenerate.disabled=false;
+        setTimeout(function(){
+          var ce=byId('btnCopyErr');if(ce)ce.onclick=function(){navigator.clipboard.writeText(byId('errText')?byId('errText').textContent:'').then(function(){}).catch(function(){});};
+          var be=byId('btnBackToEdit');if(be)be.onclick=function(){APP_STATE.currentStep=ct==='period'?5:4;APP_STATE.screen='wizard';render();};
+          var rg=byId('btnRetryGen');if(rg)rg.onclick=function(){APP_STATE.currentStep=ct==='period'?6:5;APP_STATE.screen='wizard';render();setTimeout(function(){var b=byId('btnGenerate');if(b)b.click();},300);};
+        },50);
+      });
+    },600);
+  },400);
 }
 
-function buildSystemPrompt() {
-  const ct = APP_STATE.clientType;
-  let formatSpec = '';
-
-  if (ct === 'personal') {
-    formatSpec = `输出格式要求（私教一对一单次训练方案）：
-
-# 【客户姓名】私教一对一单次训练方案
-
-## 基本信息
-- 年龄：XX岁 | 性别：XX | 训练水平：XX
-- 训练时长：XX分钟 | 可用器械：XX
-- 本次训练目标：XX
-- 采用训练模式：XX（如：CrossFit AMRAP + Tabata 组合）
-- 方案参考：本方案融合了2026年最新的[相关研究]和[顶尖教练]的训练思路
-
-## 一、动态热身（XX分钟）
-按顺序执行，用表格列出：序号 | 动作名称 | 动作要点 | 组数×次数/时长
-
-## 二、主训练（XX分钟）
-### 第一部分：主训练模块（标明训练模式如 EMOM 20分钟）
-用表格列出：序号 | 动作名称 | 动作要点 | 组数×次数/时长 | 强度要求 | 进阶/退阶建议
-### 第二部分：辅助/核心训练
-用表格列出
-
-## 三、静态放松（XX分钟）
-每个动作保持XX秒，表格列出：序号 | 肌肉部位 | 动作要点 | 保持时长
-
-## 四、训练注意事项
-1. 强度控制建议
-2. 安全提示
-3. 下次训练建议
-4. 最新研究提示`;
-  } else if (ct === 'athlete') {
-    formatSpec = `输出格式要求（运动员专项体能训练方案）：
-
-# 【运动员】【运动项目】专项体能训练方案
-
-## 基本信息
-- 年龄/性别/运动年限/训练水平
-- 训练时长/可用器械/本次训练重点
-- 方案参考：本方案基于2026年[运动项目]最新体能训练研究制定
-
-## 一、专项热身（XX分钟）
-包含专项动作激活和神经激活，用表格列出
-
-## 二、主训练（XX分钟）
-### 第一部分：专项力量训练（表格）
-### 第二部分：专项耐力/爆发力训练（表格）
-### 第三部分：专项速度/敏捷性训练（表格）
-
-## 三、恢复与再生（XX分钟）
-表格列出放松动作
-
-## 四、比赛周期调整建议`;
-  } else {
-    formatSpec = `输出格式要求（多人团队课程方案）：
-
-# 【XX人】团队健身课程方案
-
-## 基本信息
-- 人数/平均年龄/平均训练水平
-- 课程时长/可用器械/场地大小
-- 课程主题/采用训练模式
-
-## 一、集体热身（XX分钟）
-包含互动性热身游戏，提升团队氛围，用表格列出
-
-## 二、主训练（XX分钟）
-明确标注团队分工和比赛规则
-用表格：模块 | 内容 | 时间 | 团队规则
-
-## 三、集体放松（XX分钟）
-表格列出放松动作
-
-## 四、课程注意事项
-1. 不同水平学员的调整方案
-2. 安全提示
-3. 团队激励建议
-
-## 五、分组轮换方案（如适用）
-含场地布局和轮换时间表`;
+// ==================== System Prompt Builders ====================
+function buildSystemPrompt(){
+  var ct=APP_STATE.clientType;var formatSpec='';
+  if(ct==='personal'){
+    formatSpec='输出格式（私教一对一单次训练方案）：\n# 【客户】私教一对一训练方案\n## 基本信息（年龄/性别/训练水平/训练时长/器械/目标/训练模式/方案参考）\n## 一、动态热身（XX分钟）[表格：序号|动作|要点|组数×次数/时长]\n## 二、主训练（XX分钟）第一部分：主训练模块[表格含强度要求+进阶退阶] + 第二部分：辅助/核心训练\n## 三、静态放松（XX分钟）[表格]\n## 四、训练注意事项（强度控制/安全提示/下次建议/最新研究提示）';
+  }else if(ct==='athlete'){
+    formatSpec='输出格式（运动员专项体能训练方案）：\n# 【运动员】【运动项目】专项体能训练方案\n## 基本信息（年龄/性别/运动年限/训练水平/训练时长/器械/训练重点/方案参考）\n## 一、专项热身（XX分钟）[含专项动作激活+神经激活，表格]\n## 二、主训练（XX分钟）第一部分：专项力量训练 + 第二部分：专项耐力/爆发力 + 第三部分：专项速度/敏捷性\n## 三、恢复与再生（XX分钟）[表格]\n## 四、比赛周期调整建议';
+  }else if(ct==='team'){
+    formatSpec='输出格式（多人团队课程方案）：\n# 【XX人】团队健身课程方案\n## 基本信息（人数/平均年龄/水平/课程时长/器械/场地/课程主题/训练模式）\n## 一、集体热身（XX分钟）[含互动热身游戏，表格]\n## 二、主训练（XX分钟）[表格：模块|内容|时间|团队规则]\n## 三、集体放松（XX分钟）[表格]\n## 四、课程注意事项（分层调整/安全提示/团队激励）\n## 五、分组轮换方案（场地布局+轮换时间表）';
+  }else{
+    var fd=APP_STATE.formData;
+    var periodLabel=(PERIOD_TYPES.find(function(p){return p.value===fd.periodType;})||{}).label||'周期';
+    var phaseLabel=(PERIOD_PHASES.find(function(p){return p.value===fd.currentPhase;})||{}).label||'训练';
+    var dpw=fd.trainingDaysPerWeek||3;
+    formatSpec='输出格式（'+periodLabel+'周期训练计划）：\n# 【'+periodLabel+'】周期训练计划\n## 周期概览（周期类型/训练频率'+dpw+'天每周/当前阶段'+phaseLabel+'/核心目标/阶段划分时间线）\n\n## 每周详细训练方案（按周组织，每周包含所有训练日）：\n### 第N周：主题\n#### 训练日1：[日期/重点] [完整训练方案含热身+主训练+放松]\n#### 训练日2：[日期/重点]\n...（共'+dpw+'个训练日）\n\n## 渐进负荷策略（每周强度递增/%1RM或RPE变化/容量变化/减载周安排）\n## 周期评估指标（第2周末/第4周末/第8周末的评估项目和目标值）\n## 营养与恢复建议（各阶段营养侧重/睡眠/主动恢复策略）\n\n关键：每个训练日必须包含完整的动态热身+主训练+放松三部分，主训练用表格呈现。每周之间必须有明确的渐进负荷变化。';
   }
 
-  return `你是一位拥有15年以上执教经验的国际认证专业体能教练与健身教练，精通运动生理学、运动解剖学、训练周期理论和各类主流训练体系。
-
-你必须精通以下所有训练模式并能灵活运用：CrossFit(WOD/EMOM/AMRAP/For Time/Chipper/Hero WOD)、Tabata、HIIT、功能性训练、传统力量举、健美式训练、5×5、线性周期、波浪周期、有氧/无氧耐力、乳酸阈值训练、HeroX、斯巴达训练、TRX悬吊训练、壶铃训练、战绳训练、增强式训练。
-
-重要原则：
-1. 安全性第一：考虑健康状况和伤病史，避免高危动作
-2. 科学性优先：优先使用有循证医学支持的训练方法
-3. 与时俱进：融入搜索到的最新训练科学研究成果
-4. 个性化：根据年龄、性别、水平、目标针对设计
-5. 可执行性：方案简单明了，易于教练执行和客户理解
-6. 多样性：合理组合不同训练模式，避免训练枯燥
-
-${formatSpec}
-
-你必须将以下2026年最新训练科学研究成果融入方案设计中（这些是你训练数据中的已知研究），并在最终方案中明确引用：
-
-1. **增强式训练荟萃分析** (Frontiers in Physiology, 2026.01)：纳入31项研究、1033名运动员。立定跳远ES=1.10，摆臂下蹲跳ES=1.00。最佳剂量：每周2次、8-10周周期。单纯堆跳跃量不增效，甚至增加损伤风险。
-2. **单侧vs双侧增强式训练** (Nature Scientific Reports, 2026, n=52名青少年篮球运动员)：双侧训练对敏捷性和水平爆发力更优；单侧训练神经肌肉适应范围更广。改善幅度3-7%。
-3. **后向冲刺训练** (Sports, 2026, 15岁篮球运动员)：后向冲刺组改善6.11%-19.25%，Y型敏捷性和SLJ显著优于前向组。
-4. **微剂量增强式训练** (BMC Sports Science, 2026)：每周3-4次×20分钟 vs 每周2次×40分钟，效果相当，CMJ提升9.6%。
-5. **神经肌肉热身** (Phys Ed Theory & Methodology, 2026, U17女排)：含增强式激活的热身比传统热身显著提高SJ、CMJ、SLJ、DJ (p<0.001)。
-6. **RAMP热身协议** (Kovacs, Dynamic Stretching 2nd Ed., 2026)：排除静态拉伸，采用Raise-Activate-Mobilize-Potentiate四阶段框架。
-7. **LTAD/YPD模型第3版** (Lloyd & Oliver, Routledge, 2026.03)：青少年初级以自体重+轻负荷为主；青春期前神经适应优先于结构适应；"调光器"理论——所有素质在所有阶段都可训练。
-8. **PEACE & LOVE损伤管理协议** (2026)：替代传统RICE，强调主动恢复和渐进负荷。
-9. **上海体校三大球专项体能研讨会** (2026.01)：提倡位置化数据解读、实战模拟测试、体能-专项一体化。
-
-重要：生成方案时选择上述最相关的2-4项研究明确标注在"方案参考"部分，禁止编造不存在的研究。`;
+  return '你是一位拥有15年以上执教经验的国际认证专业体能教练与健身教练，精通运动生理学、训练周期理论和各类主流训练体系。\n\n你必须精通并能灵活运用：CrossFit(WOD/EMOM/AMRAP/For Time)、Tabata、HIIT、功能性训练、传统力量举、健美式训练、5×5、线性周期、波浪周期、有氧/无氧耐力、乳酸阈值训练、HeroX、斯巴达训练、TRX悬吊训练、壶铃训练、战绳训练、增强式训练。\n\n核心原则：1.安全性第一 2.科学性优先（循证医学） 3.个性化 4.可执行性 5.训练多样性\n\n'+formatSpec+'\n\n你必须融入以下2026年最新训练科学研究，在方案中明确引用最相关的2-4项：\n\n1. **增强式训练荟萃分析**(Frontiers in Physiology,2026.01,31项研究/1033名运动员)：最佳剂量每周2次/8-10周周期，单纯堆跳跃量不增效甚至增加损伤风险。\n2. **单侧vs双侧增强式训练**(Nature Scientific Reports,2026,n=52青少年篮球运动员)：双侧训练对敏捷性和水平爆发力更优；单侧训练神经肌肉适应范围更广。\n3. **后向冲刺训练**(Sports,2026,15岁篮球运动员)：改善6.11%-19.25%，Y型敏捷性和立定跳远显著提升。\n4. **微剂量增强式训练**(BMC Sports Science,2026)：每周3-4次×20分钟 vs 每周2次×40分钟效果相当，CMJ提升9.6%。\n5. **神经肌肉热身**(Phys Ed Theory & Methodology,2026,U17女排)：含增强式激活的热身比传统热身显著提高SJ/CMJ/SLJ/DJ(p<0.001)。\n6. **RAMP热身协议**(Kovacs, Dynamic Stretching 2nd Ed.,2026)：排除静态拉伸，采用Raise-Activate-Mobilize-Potentiate四阶段框架。\n7. **LTAD/YPD模型第3版**(Lloyd & Oliver, Routledge,2026.03)：青少年以自体重+轻负荷为主；青春期前神经适应优先于结构适应；"调光器"理论。\n8. **PEACE & LOVE损伤管理**(2026)：替代传统RICE，强调主动恢复和渐进负荷。\n9. **上海体校三大球专项体能研讨会**(2026.01)：提倡位置化数据解读、实战模拟测试、体能-专项一体化。\n\n重要：方案参考部分必须标注采用的研究，禁止编造不存在的研究。';
 }
 
-function buildUserPrompt() {
-  const ct = APP_STATE.clientType;
-  const fd = APP_STATE.formData;
-  let prompt = '';
-
-  if (ct === 'team') {
-    prompt = `
-- 客户类型：多人团队课程
-- 团队人数：${fd.teamSize || '未指定'}人
-- 平均年龄：${fd.teamAvgAge || '未指定'}岁
-- 平均训练水平：${fd.teamAvgLevel || '未指定'}`;
-  } else {
-    prompt = `
-- 客户类型：${ct === 'personal' ? '私教一对一' : '运动员专项体能'}
-- 年龄：${fd.age || '未指定'}岁
-- 性别：${fd.gender === 'male' ? '男' : fd.gender === 'female' ? '女' : '未指定'}
-- 身高：${fd.height || '未指定'}cm
-- 体重：${fd.weight || '未指定'}kg
-- 训练年限：${fd.trainingYears || '未指定'}
-- 训练水平：${fd.trainingLevel || '未指定'}`;
-  }
-
-  if (ct === 'athlete' && fd.sportType) {
-    prompt += `\n- 运动项目：${fd.sportType}`;
-  }
-
-  prompt += `
-- 伤病史：${fd.injury === 'none' ? '无伤病' : fd.injury ? INJURY_OPTIONS.find(o=>o.value===fd.injury)?.label||fd.injury : '未指定'}
-- 训练时长：${fd.trainingDuration || '未指定'}分钟
-- 可用器械：${fd.equipment || '未指定'}
-- 训练场地：${fd.venue || '未指定'}
-- 训练目标：${fd.goals.length > 0 ? fd.goals.map(g => GOAL_OPTIONS.find(o=>o.id===g)?.label||g).join('、') : '综合体能提升'}
-- 偏好训练模式：${fd.trainingModes.length > 0 ? fd.trainingModes.map(m => TRAINING_MODES.find(o=>o.id===m)?.label||m).join('、') : '由AI根据目标自动推荐最合适的模式'}
-- 补充说明：${fd.extraNotes || '无'}`;
-
-  return prompt;
+function buildUserPrompt(){
+  var ct=APP_STATE.clientType, fd=APP_STATE.formData, p='';
+  if(ct==='team')p='- 客户类型：多人团队课程\n- 团队人数：'+(fd.teamSize||'未指定')+'人\n- 平均年龄：'+(fd.teamAvgAge||'未指定')+'岁\n- 平均训练水平：'+(fd.teamAvgLevel||'未指定');
+  else if(ct==='period')p='- 客户类型：周期训练计划\n- 年龄：'+(fd.age||'未指定')+'岁\n- 训练水平：'+(fd.trainingLevel||'未指定')+'\n- 训练年限：'+(fd.trainingYears||'未指定')+'\n- 周期类型：'+((PERIOD_TYPES.find(function(o){return o.value===fd.periodType;})||{}).label||'')+'\n- 每周训练天数：'+(fd.trainingDaysPerWeek||3)+'天\n- 当前阶段：'+((PERIOD_PHASES.find(function(o){return o.value===fd.currentPhase;})||{}).label||'')+'\n- 核心目标：'+(fd.periodGoal||'综合体能');
+  else p='- 客户类型：'+(ct==='personal'?'私教一对一':'运动员专项体能')+'\n- 年龄：'+(fd.age||'未指定')+'岁\n- 性别：'+(fd.gender==='male'?'男':fd.gender==='female'?'女':'未指定')+'\n- 身高：'+(fd.height||'未指定')+'cm\n- 体重：'+(fd.weight||'未指定')+'kg\n- 训练年限：'+(fd.trainingYears||'未指定')+'\n- 训练水平：'+(fd.trainingLevel||'未指定');
+  if(ct==='athlete'&&fd.sportType)p+='\n- 运动项目：'+fd.sportType;
+  p+='\n- 伤病史：'+(fd.injury==='none'?'无伤病':fd.injury?((INJURY_OPTIONS.find(function(o){return o.value===fd.injury;})||{}).label||fd.injury):'未指定')+'\n- 训练时长：'+(fd.trainingDuration||'未指定')+'分钟\n- 可用器械：'+(fd.equipment||'未指定')+'\n- 训练场地：'+(fd.venue||'未指定')+'\n- 训练目标：'+(fd.goals.length>0?fd.goals.map(function(g){return(GOAL_OPTIONS.find(function(o){return o.id===g;})||{}).label||g;}).join('、'):'综合体能提升')+'\n- 偏好训练模式：'+(fd.trainingModes.length>0?fd.trainingModes.map(function(m){return(TRAINING_MODES.find(function(o){return o.id===m;})||{}).label||m;}).join('、'):'由AI自动推荐')+'\n- 补充说明：'+(fd.extraNotes||'无');
+  return p;
 }
 
-function saveToHistory(plan) {
-  const history = lsGet('history', []);
-  const fd = APP_STATE.formData;
-  const ct = APP_STATE.clientType;
-
-  const summaryParts = [];
-  if (ct === 'team') summaryParts.push(`${fd.teamSize||'N'}人团队`);
-  else summaryParts.push(`${fd.age||'?'}岁`);
-  if (ct === 'athlete' && fd.sportType) summaryParts.push(fd.sportType);
-
-  const goalLabels = fd.goals.map(g => GOAL_OPTIONS.find(o=>o.id===g)?.label||g);
-
-  history.push({
-    id: APP_STATE.currentPlanId,
-    timestamp: Date.now(),
-    clientType: ct,
-    formData: { ...fd },
-    plan: plan,
-    summary: summaryParts.join(' · '),
-    goals: goalLabels.join('、') || '综合训练',
-  });
-
-  // Keep max 50
-  if (history.length > 50) {
-    history.splice(0, history.length - 50);
-  }
-
-  lsSet('history', history);
+function saveToHistory(plan){
+  var history=lsGet('history',[]), fd=APP_STATE.formData, ct=APP_STATE.clientType;
+  var summaryParts=[];
+  if(ct==='team')summaryParts.push((fd.teamSize||'N')+'人团队');else summaryParts.push((fd.age||'?')+'岁');
+  if(ct==='athlete'&&fd.sportType)summaryParts.push(fd.sportType);
+  if(ct==='period')summaryParts.push((PERIOD_TYPES.find(function(p){return p.value===fd.periodType;})||{}).label||'周期');
+  var goalLabels=fd.goals.map(function(g){return(GOAL_OPTIONS.find(function(o){return o.id===g;})||{}).label||g;});
+  history.push({id:APP_STATE.currentPlanId,timestamp:Date.now(),clientType:ct,formData:JSON.parse(JSON.stringify(fd)),plan:plan,summary:summaryParts.join(' · '),goals:goalLabels.join('、')||'综合训练'});
+  if(history.length>50)history.splice(0,history.length-50);
+  lsSet('history',history);
 }
 
 // ==================== Event Binding ====================
-function bindEvents() {
-  // Client type selection (Step 1)
-  document.querySelectorAll('.client-card').forEach(card => {
-    card.addEventListener('click', function() {
-      APP_STATE.clientType = this.dataset.type;
-      document.querySelectorAll('.client-card').forEach(c => c.classList.remove('selected'));
-      this.classList.add('selected');
-    });
-  });
+function bindEvents(){
+  var i, cards, chips;
 
-  // Chip toggles (Step 4)
-  document.querySelectorAll('#goalChips .chip').forEach(chip => {
-    chip.addEventListener('click', function() {
-      const goal = this.dataset.goal;
-      toggleArrayItem(APP_STATE.formData.goals, goal);
-      this.classList.toggle('selected');
-    });
-  });
-  document.querySelectorAll('#modeChips .chip').forEach(chip => {
-    chip.addEventListener('click', function() {
-      const mode = this.dataset.mode;
-      toggleArrayItem(APP_STATE.formData.trainingModes, mode);
-      this.classList.toggle('selected');
-    });
-  });
+  // Client type cards
+  cards=document.querySelectorAll('.client-card');
+  for(i=0;i<cards.length;i++){(function(card){card.onclick=function(){APP_STATE.clientType=this.dataset.type;render();};})(cards[i]);}
+
+  // Goal chips
+  chips=document.querySelectorAll('#goalChips .chip');
+  for(i=0;i<chips.length;i++){(function(chip){chip.onclick=function(){toggleArrayItem(APP_STATE.formData.goals,this.dataset.goal);this.classList.toggle('selected');};})(chips[i]);}
+
+  // Mode chips
+  chips=document.querySelectorAll('#modeChips .chip');
+  for(i=0;i<chips.length;i++){(function(chip){chip.onclick=function(){toggleArrayItem(APP_STATE.formData.trainingModes,this.dataset.mode);this.classList.toggle('selected');};})(chips[i]);}
+
+  // Period type chips
+  chips=document.querySelectorAll('#periodTypeChips .chip');
+  for(i=0;i<chips.length;i++){(function(chip){chip.onclick=function(){APP_STATE.formData.periodType=this.dataset.ptype;render();};})(chips[i]);}
+
+  // Phase chips
+  chips=document.querySelectorAll('#phaseChips .chip');
+  for(i=0;i<chips.length;i++){(function(chip){chip.onclick=function(){APP_STATE.formData.currentPhase=this.dataset.phase;render();};})(chips[i]);}
 
   // Next button
-  const btnNext = document.getElementById('btnNext');
-  if (btnNext) {
-    btnNext.addEventListener('click', () => {
-      if (!validateStep()) return;
-      collectFormData();
-      APP_STATE.currentStep = Math.min(5, APP_STATE.currentStep + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      render();
-    });
-  }
+  var btnNext=byId('btnNext');
+  if(btnNext)btnNext.onclick=function(){if(!validateStep())return;collectFormData();var maxSteps=APP_STATE.clientType==='period'?6:5;APP_STATE.animDir=1;APP_STATE.currentStep=Math.min(maxSteps,APP_STATE.currentStep+1);window.scrollTo({top:0,behavior:'smooth'});render();};
 
   // Back button
-  const btnBack = document.getElementById('btnBack');
-  if (btnBack) {
-    btnBack.addEventListener('click', () => {
-      collectFormData();
-      APP_STATE.currentStep = Math.max(1, APP_STATE.currentStep - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      render();
-    });
-  }
+  var btnBack=byId('btnBack');
+  if(btnBack)btnBack.onclick=function(){collectFormData();APP_STATE.animDir=-1;APP_STATE.currentStep=Math.max(1,APP_STATE.currentStep-1);window.scrollTo({top:0,behavior:'smooth'});render();};
 
   // Generate button
-  const btnGenerate = document.getElementById('btnGenerate');
-  if (btnGenerate) {
-    btnGenerate.addEventListener('click', generatePlan);
-  }
+  var btnGen=byId('btnGenerate');
+  if(btnGen)btnGen.onclick=generatePlan;
 
-  // Result page buttons
-  const btnCopyPlan = document.getElementById('btnCopyPlan');
-  if (btnCopyPlan) {
-    btnCopyPlan.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(APP_STATE.generatedPlan || '');
-        showToast('✅ 方案已复制到剪贴板', 'success');
-      } catch {
-        // Fallback
-        const textarea = document.createElement('textarea');
-        textarea.value = APP_STATE.generatedPlan || '';
-        textarea.style.position = 'fixed'; textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        showToast('✅ 方案已复制到剪贴板', 'success');
-      }
-    });
-  }
+  // Copy plan
+  var btnCopy=byId('btnCopyPlan');
+  if(btnCopy)btnCopy.onclick=function(){try{navigator.clipboard.writeText(APP_STATE.generatedPlan||'').then(function(){showToast('✅ 已复制到剪贴板','success');});}catch(e){var ta=document.createElement('textarea');ta.value=APP_STATE.generatedPlan||'';ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✅ 已复制','success');}};
 
-  const btnNewPlan = document.getElementById('btnNewPlan');
-  if (btnNewPlan) {
-    btnNewPlan.addEventListener('click', () => {
-      APP_STATE.screen = 'wizard';
-      APP_STATE.currentStep = 1;
-      APP_STATE.clientType = '';
-      APP_STATE.formData = {
-        age: '', gender: '', height: '', weight: '',
-        trainingYears: '', trainingLevel: '',
-        teamSize: '', teamAvgAge: '', teamAvgLevel: '',
-        injury: '', trainingDuration: '', equipment: '', venue: '',
-        goals: [], trainingModes: [], sportType: '', extraNotes: '',
-      };
-      APP_STATE.generatedPlan = null;
-      APP_STATE.currentPlanId = null;
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.screen === 'wizard'));
-      render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
+  // New plan
+  var btnNew=byId('btnNewPlan');
+  if(btnNew)btnNew.onclick=function(){APP_STATE.screen='wizard';APP_STATE.currentStep=1;APP_STATE.clientType='';APP_STATE.formData={age:'',gender:'',height:'',weight:'',trainingYears:'',trainingLevel:'',teamSize:'',teamAvgAge:'',teamAvgLevel:'',injury:'',trainingDuration:'',equipment:'',venue:'',goals:[],trainingModes:[],sportType:'',extraNotes:'',periodType:'micro',trainingDaysPerWeek:'3',currentPhase:'prep',periodGoal:'general_fitness'};APP_STATE.generatedPlan=null;APP_STATE.currentPlanId=null;navigateTo('wizard');};
 
   // History items
-  document.querySelectorAll('.history-item').forEach(item => {
-    item.addEventListener('click', function() {
-      const id = this.dataset.historyId;
-      const history = lsGet('history', []);
-      const record = history.find(h => h.id === id);
-      if (record) {
-        APP_STATE.clientType = record.clientType;
-        APP_STATE.formData = record.formData;
-        APP_STATE.generatedPlan = record.plan;
-        APP_STATE.currentPlanId = record.id;
-        APP_STATE.screen = 'result';
-        render();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-  });
+  var items=document.querySelectorAll('.history-item');
+  for(i=0;i<items.length;i++){(function(item){item.onclick=function(){var id=this.dataset.historyId;var h=lsGet('history',[]).find(function(r){return r.id===id;});if(h){APP_STATE.clientType=h.clientType;APP_STATE.formData=h.formData;APP_STATE.generatedPlan=h.plan;APP_STATE.currentPlanId=h.id;APP_STATE.screen='result';render();window.scrollTo({top:0,behavior:'smooth'});}};})(items[i]);}
+
+  // Delete buttons
+  var delBtns=document.querySelectorAll('[data-delete-id]');
+  for(i=0;i<delBtns.length;i++){(function(btn){btn.onclick=function(e){e.stopPropagation();var id=this.dataset.deleteId;lsSet('history',lsGet('history',[]).filter(function(h){return h.id!==id;}));showToast('🗑️ 已删除','info');render();};})(delBtns[i]);}
 
   // Clear history
-  const btnClearHistory = document.getElementById('btnClearHistory');
-  if (btnClearHistory) {
-    btnClearHistory.addEventListener('click', () => {
-      if (confirm('确定要清空所有历史方案吗？此操作不可恢复。')) {
-        lsSet('history', []);
-        showToast('🗑️ 历史记录已清空', 'info');
-        render();
-      }
-    });
-  }
-
-  // Individual delete buttons
-  document.querySelectorAll('[data-delete-id]').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const id = this.dataset.deleteId;
-      const history = lsGet('history', []);
-      const updated = history.filter(h => h.id !== id);
-      lsSet('history', updated);
-      showToast('🗑️ 方案已删除', 'info');
-      render();
-    });
-  });
+  var btnClear=byId('btnClearHistory');
+  if(btnClear)btnClear.onclick=function(){if(confirm('确定清空所有历史方案？')){lsSet('history',[]);showToast('🗑️ 已清空','info');render();}};
 
   // Bottom nav
-  document.querySelectorAll('.nav-item').forEach(nav => {
-    nav.addEventListener('click', function() {
-      navigateTo(this.dataset.screen);
-    });
-  });
+  var navs=document.querySelectorAll('.nav-item');
+  for(i=0;i<navs.length;i++){(function(nav){nav.onclick=function(){navigateTo(this.dataset.screen);};})(navs[i]);}
 
-  // Header buttons
-  const btnSettings = document.getElementById('btnSettings');
-  if (btnSettings) {
-    btnSettings.addEventListener('click', () => navigateTo('settings'));
-  }
-  const btnHistory = document.getElementById('btnHistory');
-  if (btnHistory) {
-    btnHistory.addEventListener('click', () => navigateTo('history'));
-  }
-  const btnInstall = document.getElementById('btnInstall');
-  if (btnInstall && deferredPrompt) {
-    btnInstall.classList.remove('hidden');
-  }
-  if (btnInstall) {
-    btnInstall.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const result = await deferredPrompt.userChoice;
-        if (result.outcome === 'accepted') {
-          showToast('✅ 已添加到桌面！', 'success');
-        }
-        deferredPrompt = null;
-        btnInstall.classList.add('hidden');
-      }
-    });
+  // FAB
+  var fab=byId('fabNew');
+  if(fab)fab.onclick=function(){navigateTo('wizard');};
+
+  // Header settings
+  var btnSet=byId('btnSettings');
+  if(btnSet)btnSet.onclick=function(){navigateTo('settings');};
+
+  // Install button
+  var btnInst=byId('btnInstall');
+  if(btnInst&&typeof deferredPrompt!=='undefined'&&deferredPrompt){
+    btnInst.classList.remove('hidden');
+    btnInst.onclick=function(){
+      if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(r){if(r.outcome==='accepted')showToast('✅ 已添加到桌面！','success');deferredPrompt=null;btnInst.classList.add('hidden');});}
+    };
   }
 
-  // Settings page
-  const btnSaveSettings = document.getElementById('btnSaveSettings');
-  if (btnSaveSettings) {
-    btnSaveSettings.addEventListener('click', saveSettings);
-  }
-  const btnToggleApiKey = document.getElementById('btnToggleApiKey');
-  if (btnToggleApiKey) {
-    btnToggleApiKey.addEventListener('click', () => {
-      const input = document.getElementById('fd_apiKey');
-      if (input) input.type = input.type === 'password' ? 'text' : 'password';
-    });
-  }
+  // Save settings
+  var btnSave=byId('btnSaveSettings');
+  if(btnSave)btnSave.onclick=saveSettings;
+
+  // Toggle API key
+  var btnToggle=byId('btnToggleApiKey');
+  if(btnToggle)btnToggle.onclick=function(){var inp=byId('fd_apiKey');if(inp)inp.type=inp.type==='password'?'text':'password';};
+
+  // Exercise filters
+  var filterChips=document.querySelectorAll('#exFilter .filter-chip');
+  for(i=0;i<filterChips.length;i++){(function(chip){chip.onclick=function(){
+    var all=document.querySelectorAll('#exFilter .filter-chip');
+    for(var j=0;j<all.length;j++)all[j].classList.remove('active');
+    this.classList.add('active');
+    renderExGrid(this.dataset.cat,(byId('exSearch')||{}).value||'');
+  };})(filterChips[i]);}
+
+  // Exercise search
+  var exSearch=byId('exSearch');
+  if(exSearch)exSearch.oninput=function(){var catEl=document.querySelector('#exFilter .filter-chip.active');renderExGrid(catEl?catEl.dataset.cat:'all',this.value);};
+
+  // Exercise cards
+  var exCards=document.querySelectorAll('.exercise-card');
+  for(i=0;i<exCards.length;i++){(function(card){card.onclick=function(){var ex=EXERCISES.find(function(e){return e.id===this.dataset.exid;}.bind(this));if(!ex)return;showExModal(ex);}.bind(card);})(exCards[i]);}
+
+  // Render exercise grid if on exercises screen
+  if(APP_STATE.screen==='exercises')renderExGrid();
 }
 
-function validateStep() {
-  const step = APP_STATE.currentStep;
-  const fd = APP_STATE.formData;
-  const ct = APP_STATE.clientType;
+function showExModal(ex){
+  var diffLabels={beginner:'初级',intermediate:'中级',advanced:'高级'};
+  var catLabel=(EXERCISE_CATEGORIES.find(function(c){return c.id===ex.cat;})||{}).label||ex.cat;
+  var modal=byId('modalContainer');
+  modal.innerHTML='<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-header"><h3>'+ex.icon+' '+ex.name+'</h3><button class="modal-close" id="modalClose">✕</button></div><div class="modal-body"><span class="tag">'+catLabel+'</span> <span class="tag green">'+diffLabels[ex.diff]+'</span> <span class="tag purple">'+ex.muscles+'</span><h4>动作要点</h4><p>'+ex.desc+'</p></div></div></div>';
+  modal.classList.remove('hidden');document.body.classList.add('modal-open');
+  function close(){modal.classList.add('hidden');document.body.classList.remove('modal-open');modal.innerHTML='';}
+  byId('modalClose').onclick=close;
+  byId('modalBackdrop').onclick=function(e){if(e.target===this)close();};
+}
 
-  if (step === 1) {
-    if (!ct) { showToast('请选择客户类型', 'error'); return false; }
+// ==================== Validation ====================
+function validateStep(){
+  var step=APP_STATE.currentStep, ct=APP_STATE.clientType;
+  if(step===1){if(!ct){showToast('请选择方案类型','error');return false;}return true;}
+  if(step===2){
+    if(ct==='team'){var s=byId('fd_teamSize');if(!s||!s.value||parseInt(s.value)<2){showToast('请填写团队人数（≥2）','error');return false;}}
+    else{var a=byId('fd_age');if(!a||!a.value||parseInt(a.value)<10){showToast('请填写有效年龄','error');return false;}var l=byId('fd_trainingLevel');if(!l||!l.value){showToast('请选择训练水平','error');return false;}if(ct==='athlete'){var sp=byId('fd_sportType');if(!sp||!sp.value){showToast('请选择运动项目','error');return false;}}}
     return true;
-  }
-  if (step === 2) {
-    if (ct === 'team') {
-      const size = document.getElementById('fd_teamSize')?.value;
-      if (!size || parseInt(size) < 2) { showToast('请填写团队人数（至少2人）', 'error'); return false; }
-    } else {
-      const age = document.getElementById('fd_age')?.value;
-      if (!age || parseInt(age) < 10) { showToast('请填写有效年龄', 'error'); return false; }
-      const level = document.getElementById('fd_trainingLevel')?.value;
-      if (!level) { showToast('请选择训练水平', 'error'); return false; }
-      if (ct === 'athlete') {
-        const sport = document.getElementById('fd_sportType')?.value;
-        if (!sport) { showToast('请选择运动项目', 'error'); return false; }
-      }
-    }
-    return true;
-  }
-  if (step === 3) {
-    return true; // All optional
-  }
-  if (step === 4) {
-    return true; // All optional
   }
   return true;
 }
 
-function collectFormData() {
-  const step = APP_STATE.currentStep;
-  const fd = APP_STATE.formData;
+function collectFormData(){
+  var step=APP_STATE.currentStep, fd=APP_STATE.formData;
+  if(step===2){
+    if(APP_STATE.clientType==='team'){fd.teamSize=(byId('fd_teamSize')||{}).value||'';fd.teamAvgAge=(byId('fd_teamAvgAge')||{}).value||'';fd.teamAvgLevel=(byId('fd_teamAvgLevel')||{}).value||'';}
+    else{fd.age=(byId('fd_age')||{}).value||'';fd.gender=(byId('fd_gender')||{}).value||'';fd.height=(byId('fd_height')||{}).value||'';fd.weight=(byId('fd_weight')||{}).value||'';fd.trainingYears=(byId('fd_trainingYears')||{}).value||'';fd.trainingLevel=(byId('fd_trainingLevel')||{}).value||'';fd.sportType=(byId('fd_sportType')||{}).value||'';}
+  }
+  if(step===3){fd.injury=(byId('fd_injury')||{}).value||'';fd.trainingDuration=(byId('fd_trainingDuration')||{}).value||'';fd.equipment=(byId('fd_equipment')||{}).value||'';fd.venue=(byId('fd_venue')||{}).value||'';}
+  if(step===4){fd.extraNotes=(byId('fd_extraNotes')||{}).value||'';}
+  if(step===5&&APP_STATE.clientType==='period'){fd.trainingDaysPerWeek=(byId('fd_trainingDays')||{}).value||'3';fd.periodGoal=(byId('fd_periodGoal')||{}).value||'general_fitness';}
+}
 
-  if (step === 1) {
-    // clientType already set via click
-  }
-  if (step === 2) {
-    if (APP_STATE.clientType === 'team') {
-      fd.teamSize = document.getElementById('fd_teamSize')?.value || '';
-      fd.teamAvgAge = document.getElementById('fd_teamAvgAge')?.value || '';
-      fd.teamAvgLevel = document.getElementById('fd_teamAvgLevel')?.value || '';
-    } else {
-      fd.age = document.getElementById('fd_age')?.value || '';
-      fd.gender = document.getElementById('fd_gender')?.value || '';
-      fd.height = document.getElementById('fd_height')?.value || '';
-      fd.weight = document.getElementById('fd_weight')?.value || '';
-      fd.trainingYears = document.getElementById('fd_trainingYears')?.value || '';
-      fd.trainingLevel = document.getElementById('fd_trainingLevel')?.value || '';
-      fd.sportType = document.getElementById('fd_sportType')?.value || '';
-    }
-  }
-  if (step === 3) {
-    fd.injury = document.getElementById('fd_injury')?.value || '';
-    fd.trainingDuration = document.getElementById('fd_trainingDuration')?.value || '';
-    fd.equipment = document.getElementById('fd_equipment')?.value || '';
-    fd.venue = document.getElementById('fd_venue')?.value || '';
-  }
-  if (step === 4) {
-    fd.extraNotes = document.getElementById('fd_extraNotes')?.value || '';
+function saveSettings(){
+  lsSet('apiKey',(byId('fd_apiKey')||{}).value||'');lsSet('modelName',(byId('fd_modelName')||{}).value||'deepseek-chat');
+  lsSet('theme',(byId('fd_theme')||{}).value||'dark');applyTheme((byId('fd_theme')||{}).value||'dark');showToast('✅ 设置已保存','success');
+}
+
+function applyTheme(theme){
+  if(theme==='light'){
+    var vars=['--bg-primary','--bg-secondary','--bg-card','--bg-input','--border','--text-primary','--text-secondary','--text-muted'];
+    var vals=['#f8fafc','#f1f5f9','#ffffff','#f1f5f9','#e2e8f0','#0f172a','#475569','#94a3b8'];
+    for(var i=0;i<vars.length;i++)document.documentElement.style.setProperty(vars[i],vals[i]);
+    document.querySelector('.app-header').style.background='rgba(248,250,252,0.85)';
+    document.querySelector('.bottom-nav').style.background='rgba(248,250,252,0.92)';
   }
 }
 
-function saveSettings() {
-  const apiKey = document.getElementById('fd_apiKey')?.value || '';
-  const modelName = document.getElementById('fd_modelName')?.value || 'deepseek-chat';
-  const searchMode = document.getElementById('fd_searchMode')?.value || 'thorough';
-  const theme = document.getElementById('fd_theme')?.value || 'dark';
-
-  lsSet('apiKey', apiKey);
-  lsSet('modelName', modelName);
-  lsSet('searchMode', searchMode);
-  lsSet('theme', theme);
-
-  applyTheme(theme);
-  showToast('✅ 设置已保存', 'success');
+// ==================== PWA ====================
+function registerSW(){
+  if(!('serviceWorker' in navigator))return;
+  var swCode="var CACHE_NAME='fitness-coach-pro-v2';self.addEventListener('install',function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll([self.location.href]);}));self.skipWaiting();});self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(keys){return Promise.all(keys.filter(function(k){return k!==CACHE_NAME;}).map(function(k){return caches.delete(k);}));}));self.clients.claim();});self.addEventListener('fetch',function(e){if(e.request.url.indexOf('api.deepseek.com')>-1){e.respondWith(fetch(e.request));return;}e.respondWith(caches.match(e.request).then(function(cached){return cached||fetch(e.request).then(function(r){if(r.ok){var clone=r.clone();caches.open(CACHE_NAME).then(function(c){return c.put(e.request,clone);});}return r;});}));});";
+  var blob=new Blob([swCode],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
 }
 
-function applyTheme(theme) {
-  if (theme === 'light') {
-    document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
-    document.documentElement.style.setProperty('--bg-secondary', '#f1f5f9');
-    document.documentElement.style.setProperty('--bg-card', '#ffffff');
-    document.documentElement.style.setProperty('--bg-input', '#f1f5f9');
-    document.documentElement.style.setProperty('--border', '#e2e8f0');
-    document.documentElement.style.setProperty('--text-primary', '#0f172a');
-    document.documentElement.style.setProperty('--text-secondary', '#475569');
-    document.documentElement.style.setProperty('--text-muted', '#94a3b8');
-    document.querySelector('.app-header').style.background = 'rgba(248,250,252,0.85)';
-    document.querySelector('.bottom-nav').style.background = 'rgba(248,250,252,0.9)';
-  }
-}
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;var btn=byId('btnInstall');if(btn)btn.classList.remove('hidden');setTimeout(function(){if(deferredPrompt)showToast('📲 点击右上角安装到桌面','info',4000);},3000);});
+window.addEventListener('appinstalled',function(){deferredPrompt=null;var btn=byId('btnInstall');if(btn)btn.classList.add('hidden');showToast('✅ 已安装！','success');});
 
-// ==================== PWA Registration ====================
-function registerSW() {
-  if ('serviceWorker' in navigator) {
-    // Create inline service worker using blob
-    const swCode = `
-const CACHE_NAME = 'fitness-coach-v2';
-const ASSETS = [self.location.href];
-
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-    ))
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', e => {
-  // Network-first for API calls
-  if (e.request.url.includes('api.deepseek.com')) {
-    e.respondWith(fetch(e.request));
-    return;
-  }
-  // Cache-first for app shell
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      return cached || fetch(e.request).then(response => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-        }
-        return response;
-      });
-    })
-  );
-});`;
-
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    const swUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl).catch(() => {
-      // Service worker registration failed - app still works online
-    });
-  }
-}
-
-// PWA Install prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btnInstall = document.getElementById('btnInstall');
-  if (btnInstall) btnInstall.classList.remove('hidden');
-  // Show install toast after a delay
-  setTimeout(() => {
-    if (deferredPrompt) {
-      showToast('📲 点击右上角📲按钮安装到桌面，离线也能用！', 'info', 5000);
-    }
-  }, 3000);
-});
-
-window.addEventListener('appinstalled', () => {
-  deferredPrompt = null;
-  const btnInstall = document.getElementById('btnInstall');
-  if (btnInstall) btnInstall.classList.add('hidden');
-  showToast('✅ 应用已安装到桌面！', 'success');
-});
-
-// ==================== Initialization ====================
-function init() {
-  // Apply saved theme
-  const theme = lsGet('theme', 'dark');
-  applyTheme(theme);
-
-  // Create and set manifest blob URL
-  const manifest = {
-    name: '体能教练全能方案生成器',
-    short_name: '体能教练',
-    start_url: '.',
-    display: 'standalone',
-    background_color: '#0f172a',
-    theme_color: '#0f172a',
-    icons: [{ src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="80" font-size="80">🏋️</text></svg>'), sizes: '192x192', type: 'image/svg+xml' }]
-  };
-  const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-  const manifestUrl = URL.createObjectURL(manifestBlob);
-  document.getElementById('manifestLink').href = manifestUrl;
-
-  // Register service worker
+// ==================== Init ====================
+function init(){
+  var theme=lsGet('theme','dark');applyTheme(theme);
+  var manifest={name:'体能教练全能方案生成器 Pro',short_name:'体能教练Pro',start_url:'.',display:'standalone',background_color:'#0a0e1a',theme_color:'#0a0e1a',icons:[{src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="80" font-size="80">🏋️</text></svg>'),sizes:'192x192',type:'image/svg+xml'}]};
+  byId('manifestLink').href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'}));
   registerSW();
-
-  // Check for API key
-  const apiKey = lsGet('apiKey', '');
-  if (!apiKey) {
-    setTimeout(() => {
-      showToast('💡 首次使用请先配置 DeepSeek API Key', 'info', 5000);
-    }, 1000);
-  }
-
-  // Render
+  if(!lsGet('apiKey',''))setTimeout(function(){showToast('💡 首次使用请先配置 API Key','info',5000);},1000);
   render();
 }
 
-// Handle network status
-window.addEventListener('online', () => showToast('🌐 网络已连接，可以使用联网搜索', 'success', 2000));
-window.addEventListener('offline', () => showToast('📴 当前离线，可填写表单和查看历史', 'info', 3000));
+window.addEventListener('online',function(){showToast('🌐 网络已连接','success',2000);});
+window.addEventListener('offline',function(){showToast('📴 离线模式','info',3000);});
+window.addEventListener('popstate',function(){if(APP_STATE.screen==='result'){APP_STATE.screen='wizard';APP_STATE.currentStep=1;render();}});
 
-// Handle back button for wizard
-window.addEventListener('popstate', (e) => {
-  if (APP_STATE.screen === 'result') {
-    APP_STATE.screen = 'wizard';
-    APP_STATE.currentStep = 1;
-    render();
-  }
-});
-
-// Start app
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
 </html>
